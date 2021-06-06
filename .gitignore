@@ -363,4 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 #upload Folder
-FileAPI/Upload
+/AmuLab.FileAPI/Web.config
+/AmuLab.FileApp/Web.config
