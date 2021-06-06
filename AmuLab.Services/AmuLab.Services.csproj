@@ -53,6 +53,7 @@
     <Compile Include="Commons.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceBase.cs" />
+    <Compile Include="TmediaService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AmuLab.Core\AmuLab.Core.csproj">
