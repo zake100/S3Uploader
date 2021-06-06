@@ -8,7 +8,7 @@ using AmuLab.FileAPI.Helpers;
 namespace AmuLab.FileAPI.Controllers
 {
     [RoutePrefix("api/file")]
-    public class FileController : ApiController
+    public class FileController : BaseController
     {
         [HttpPost]
         [Route("upload")]
