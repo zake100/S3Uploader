@@ -72,6 +72,33 @@
       <DependentUpon>DomainGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\DynamicParameter.cs" />
+    <Compile Include="Entities\TMEDIAEntity.cs">
+      <DependentUpon>DomainGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\TMEDIA_CLCKEntity.cs">
+      <DependentUpon>DomainGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\TMEDIA_FLNGEntity.cs">
+      <DependentUpon>DomainGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\TMEDIA_FVRTEntity.cs">
+      <DependentUpon>DomainGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\TMEDIA_HASHTAGEntity.cs">
+      <DependentUpon>DomainGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\TMEDIA_RPRTEntity.cs">
+      <DependentUpon>DomainGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\TMEDIA_SHR_RECEntity.cs">
+      <DependentUpon>DomainGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\TMEDIA_TAG_MBEREntity.cs">
+      <DependentUpon>DomainGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\TMEDIA_VIEWEntity.cs">
+      <DependentUpon>DomainGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Enums\ArchivedStatusEnum.cs" />
     <Compile Include="Enums\AuthItemType.cs" />
     <Compile Include="Enums\Permission.cs" />

@@ -59,6 +59,38 @@
   <ItemGroup>
     <Compile Include="BaseRepository.cs" />
     <Compile Include="IBaseValueRepository.cs" />
+    <Compile Include="Mapper\MapperGenerator.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MapperGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mapper\TMEDIAMapper.cs">
+      <DependentUpon>MapperGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mapper\TMEDIA_CLCKMapper.cs">
+      <DependentUpon>MapperGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mapper\TMEDIA_FLNGMapper.cs">
+      <DependentUpon>MapperGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mapper\TMEDIA_FVRTMapper.cs">
+      <DependentUpon>MapperGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mapper\TMEDIA_HASHTAGMapper.cs">
+      <DependentUpon>MapperGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mapper\TMEDIA_RPRTMapper.cs">
+      <DependentUpon>MapperGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mapper\TMEDIA_SHR_RECMapper.cs">
+      <DependentUpon>MapperGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mapper\TMEDIA_TAG_MBERMapper.cs">
+      <DependentUpon>MapperGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mapper\TMEDIA_VIEWMapper.cs">
+      <DependentUpon>MapperGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
