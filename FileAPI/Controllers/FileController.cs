@@ -1,7 +1,5 @@
-﻿using System.Configuration;
-using System.Web;
+﻿using System.Web;
 using System.Web.Http;
-using Amazon.S3.Model;
 using FileAPI.Helpers;
 
 namespace FileAPI.Controllers
@@ -34,6 +32,7 @@ namespace FileAPI.Controllers
         {
             var myUploader = new AmazonHelper();
             var result = myUploader.ReadObjectData(key);
+            
             return Ok(result);
         }
 

@@ -231,3 +231,5 @@ _Pvt_Extensions
 .fake/
 /package-lock.json
 /yarn.lock
+/WebApp/Web.config
+/FileAPI/Web.config

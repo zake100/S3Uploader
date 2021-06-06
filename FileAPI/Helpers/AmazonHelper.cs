@@ -40,7 +40,7 @@ namespace FileAPI.Helpers
 
         public string ReadObjectData(string keyName)
         {
-            var responseBody = "";
+            var responseBody = string.Empty;
             try
             {
                 var request = new GetObjectRequest
