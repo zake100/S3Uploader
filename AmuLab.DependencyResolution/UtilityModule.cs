@@ -7,9 +7,9 @@ namespace AmuLab.DependencyResolution
     {
         public override void Load()
         {
-            Bind<ICacheClient>().To<RedisCacheClient>().InSingletonScope();
-            Bind<IElasticClient>().To<ElasticClient>().InSingletonScope();
-            Bind(typeof(IElasticNestClient<>)).To(typeof(ElasticNestClient<>));
+            //Bind<ICacheClient>().To<RedisCacheClient>().InSingletonScope();
+            //Bind<IElasticClient>().To<ElasticClient>().InSingletonScope();
+            //Bind(typeof(IElasticNestClient<>)).To(typeof(ElasticNestClient<>));
         }
     }
 }

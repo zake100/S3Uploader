@@ -7,7 +7,6 @@ namespace TKV.DMS.DependencyResolution
     {
         public override void Load()
         {
-            
         }
     }
 }

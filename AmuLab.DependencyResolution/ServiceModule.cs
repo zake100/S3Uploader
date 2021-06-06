@@ -7,7 +7,6 @@ namespace AmuLab.DependencyResolution
     {
         public override void Load()
         {
-            
         }
     }
 }
