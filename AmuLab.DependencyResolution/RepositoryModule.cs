@@ -7,6 +7,7 @@ namespace TKV.DMS.DependencyResolution
     {
         public override void Load()
         {
+            Bind<ITMediaRepository>().To<TMediaRepository>();
         }
     }
 }
