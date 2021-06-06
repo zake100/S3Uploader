@@ -1,31 +1,234 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model AntData.TKV.Business.Models.DashboardCountItemModel
+@{
+    ViewBag.Title = "Bảng điều khiển trung tâm";
 }
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Bảng điều khiển
+        <small></small>
+    </h1>
+    @*<ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Dashboard</li>
+        </ol>*@
+</section>
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+<!-- Main content -->
+<section class="content">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>@Model.TotalFactory</h3>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+                    <p>Tổng số đơn vị</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+                <a href="/factory" class="small-box-footer">Chi tiết <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>@Model.TotalDeviceOK</h3>
+
+                    <p>Tổng số thiết bị hoạt động</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="/device/devicenotelist" class="small-box-footer">Chi tiết <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6 ">
+            <!-- small box -->
+            <div class="small-box bg-red">
+                <div class="inner">
+                    <h3>@Model.TotalDeviceNotOK</h3>
+
+                    <p>Tổng số thiết bị không hoạt động</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                </div>
+                <a href="#" class="small-box-footer">Chi tiết <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-yellow">
+                <div class="inner">
+                    <h3>@Model.TotalUser</h3>
+
+                    <p>Tổng số người dùng</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-person-add"></i>
+                </div>
+                <a href="/users" class="small-box-footer">Chi tiết <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <!-- ./col -->
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Biểu đồ thống kê tổng hợp</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+
+                        <script type="text/javascript">
+                            $.ajax({
+                                    method: "POST",
+                                    url: "/Home/GetAllFactories",
+                                    data:null
+                                })
+                                .done(function (response) {
+                                    if (response.data != null) {
+                                        google.charts.load('current', { 'packages': ['corechart'] });
+                                        google.charts.setOnLoadCallback(drawChart);
+
+                                        function drawChart() {
+                                            var parsedData = response.data;
+                                            var len = response.data.length;
+
+                                            var data = new google.visualization.DataTable();
+                                            data.addColumn('string', 'Task');
+                                            data.addColumn('number', 'Hours per Day');
+                                            data.addRows(len);
+                                            for (var n = 0; n < len; n++) {
+                                                var i = 0;
+                                                for (var key in parsedData[n]) {
+                                                    if (key == "Name" || key == "NumberDevice") {
+                                                        data.setValue(n, i, parsedData[n][key]);
+                                                        i++;
+                                                    }
+                                                }
+                                            }
+                                
+                                            var options = {
+                                                title: '',
+                                                is3D: true,
+                                            };
+
+                                            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+                                            chart.draw(data, options);
+                                        }
+                                    }
+                                });
+
+                        </script>
+                        <div class="col-md-12">
+                            <div id="piechart" style="height: 400px;"></div>
+                        </div>
+
+                    </div>
+                    <!-- /.row -->
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Biểu đồ thống kê tình trạng thiết bị</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <script type="text/javascript">
+                            
+                            $.ajax({
+                                method: "POST",
+                                url: "/Home/GetFactoriesForBarChart",
+                                data: null
+                            })
+                            .done(function (response) {
+                                    google.charts.load('current', { 'packages': ['corechart'] });
+                                google.charts.setOnLoadCallback(drawChart);
+
+                                function drawChart() {
+                                    var parsedData = response.data;
+                                    var len = response.data.length;
+
+                                    var data = new google.visualization.DataTable();
+                                    data.addColumn('string', 'Năm');
+                                    for (var i = 0; i < response.listFactory.length; i++) {
+                                        data.addColumn('number', response.listFactory[i].Name);
+                                    }
+                                    
+                                    data.addRows(len);
+                                    for (var n = 0; n < len; n++) {
+                                        var i = 1;
+                                        var k = 0;
+                                        for (var m = 0; m < response.listFactory.length; m++) {
+                                            data.setValue(n, 0, parsedData[n].year);
+                                            if (k >= parsedData[n].parent.length) {
+                                                data.setValue(n, i, 0);
+                                            }
+                                            else if (parsedData[n].parent[k]["Name"] === response.listFactory[m].Name) {
+                                                data.setValue(n, i, parsedData[n].parent[k]["Count"]);
+                                                k++;
+                                            } else {
+                                                data.setValue(n, i, 0);
+                                            }
+                                            i++;
+                                        }
+                                    }
+
+                                    var options = {
+                                        chart: {
+                                            //title: 'Company Performance',
+                                            //subtitle: 'Sales, Expenses, and Profit: 2014-2017',
+                                        }
+                                    };
+
+                                    var chart = new google.visualization.ColumnChart(document.getElementById('columnchart_material'));
+
+                                    chart.draw(data, options);
+                                }
+                            });
+                        </script>
+                        <div class="col-md-12">
+                            <div id="columnchart_material" style="height: 400px;"></div>
+                        </div>
+
+                    </div>
+                    <!-- /.row -->
+                </div>
+
+            </div>
+        </div>
+        <!-- /.box -->
+
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+
+</section>
+<!-- /.content -->

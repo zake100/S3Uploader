@@ -1,0 +1,42 @@
+﻿@model List<AntData.TKV.Business.Models.FunctionTreeModel>
+@{
+    Layout = null;
+}
+
+@{
+    if (Model != null && Model.Count > 0)
+    {
+        foreach (var parent in Model)
+        {
+            var hasChild = false;
+            var cssHasChild = "";
+            if (parent.Children != null && parent.Children.Count > 0)
+            {
+                hasChild = true;
+                cssHasChild = "treeview menu-open";
+            }
+            
+            <li class="@cssHasChild" id="@parent.Key">
+                <a href="@parent.Url">
+                    <i class="@parent.Icon"></i><span> @parent.Caption</span>
+                    @if (hasChild)
+                    {
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    }
+                </a>
+                @if (hasChild)
+                {
+                    <ul class="treeview-menu" style="display: block;">
+                        @foreach (var child in parent.Children)
+                        {
+                            <li id="@child.Key" data-parent="@parent.Key"><a href="@child.Url"><i class="@child.Icon"></i> @child.Caption</a></li>
+                        }
+                    </ul>
+                }
+            </li>
+
+        }
+    }
+}

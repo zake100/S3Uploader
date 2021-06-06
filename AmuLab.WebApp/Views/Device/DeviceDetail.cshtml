@@ -1,0 +1,517 @@
+﻿@using AntData.TKV.Controllers
+@using Microsoft.Ajax.Utilities
+@model AntData.TKV.Business.Models.DeviceModel
+@{
+    ViewBag.Title = "Thông tin chi tiết thiết bị";
+    var baseController = ViewContext.Controller as BaseController;
+}
+<style>
+    .select2-container--default .select2-selection--single {
+        height: 34px;
+        border-radius: 0px;
+    }
+</style>
+
+<section class="content-header">
+    <h1>
+        Thông tin chi tiết thiết bị
+    </h1>
+    @*<ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Dashboard</li>
+        </ol>*@
+</section>
+@if (Model != null)
+{
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+
+                        @*@if (baseController.HasRole((int)AntData.TKV.Helper.ActionEnum.Add))
+                            {
+                                <a href="/device" class="btn btn-info">
+                                    <i class="fa fa-fw fa-plus"></i> Thêm mới
+                                </a>
+                            }
+                            @if (baseController.HasRole((int)AntData.TKV.Helper.ActionEnum.Export))
+                            {
+                                using (Html.BeginForm("Export", "Device", FormMethod.Post, new { @style = "float:right" }))
+                                {
+                                    <button type="submit" class="btn btn-success" id="aExport">
+                                        <i class="fa fa-fw fa-file-excel-o"></i> Xuất Excel
+                                    </button>
+                                }
+                            }*@
+                        @if ((baseController.IsFactory(Model.FactoryId)) && Model.Status != -1)
+                        {
+                            if (baseController.HasRole((int)AntData.TKV.Helper.ActionEnum.Add))
+                            {
+                                <a href="/device/update?id=@Model.Id" class="btn btn-info btn-sm">
+                                    <i class="fa fa-fw fa-edit"></i> Cập nhật
+                                </a>
+                            }
+                            if (baseController.HasRole((int)AntData.TKV.Helper.ActionEnum.ApprovedTranfer))
+                            {
+                                <a href="#" class="btn btn-success btn-sm" onclick="openTransfer(@Model.Id, '@Model.Name', @Model.FactoryId, '@Model.FactoryName', @Model.UnitQuantity)">
+                                    <i class="fa fa-fw fa-book"></i> Chuyển đơn vị
+                                </a>
+                            }
+                            <a href="#" class="btn btn-warning btn-sm" onclick="openMaitaince(@Model.Id,'@Model.Name', @Model.FactoryId, '@Model.FactoryName', @Model.UnitQuantity);">
+                                <i class="fa fa-fw  fa-wrench"></i> Đặt lịch bảo dưỡng
+                            </a>
+                            <a href="#" class="btn btn-primary btn-sm" onclick=" openNote(@Model.Id, '@Model.Name', '@Model.FactoryName'); ">
+                                <i class="fa fa-fw fa-sticky-note-o"></i> Thêm mới nhật ký thiết bị
+                            </a>
+                            <a href="#" class="btn btn-danger btn-sm" onclick="Liquidate(@Model.Id,'@Model.Status');">
+                                Thanh lý
+                            </a>
+                        }
+
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <h2 style="margin-top:0px">@Model.Name</h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Đơn vị quản lý hiện tại:</label> @Model.FactoryName
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Thiết bị điều khiển: </label> @Model.ControlDevice
+                                </div>
+                                <div class="form-group">
+                                    <label>Số quản lý: </label> @Model.NumberOfManagement
+                                </div>
+                                <div class="form-group">
+                                    <label>Số quyết định điều động: </label> @Model.NumberOfTransfer
+                                </div>
+                                <div class="form-group">
+                                    <label>Thời gian đưa vào sử dụng: </label>
+                                    @if (Model.YearToUse.HasValue)
+                                    {
+                                        <span>@Model.YearToUse.Value.ToString("dd/MM/yyyy")</span>
+                                    }
+                                </div>
+                                <div class="form-group">
+                                    <label>Ngày tạo: </label>
+                                    <span>@Model.DateCreated.ToString("dd/MM/yyyy")</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Ngày sửa cuối: </label>
+                                    <span>@Model.DateModified.ToString("dd/MM/yyyy")</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Ghi chú: </label>
+                                    @Model.Note
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Danh mục thiết bị: </label> @Model.DeviceCategoryName
+
+                                </div>
+                                <div class="form-group">
+                                    <label>Đơn vị tính: </label> @Model.UnitName
+
+                                </div>
+                                <div class="form-group">
+                                    <label>Số lượng: </label> @Model.UnitQuantity
+                                </div>
+                                <div class="form-group">
+                                    <label>Vị trí lắp đặt: </label> @Model.InstallationLocation
+                                </div>
+                                <div class="form-group">
+                                    <label>Tình trạng: </label> @Model.StatusName
+                                </div>
+                                <div class="form-group">
+                                    <label>Người tạo: </label> @Model.Creator
+                                </div>
+                                <div class="form-group">
+                                    <label>Người sửa cuối: </label> @Model.Updater
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Thông số kỹ thuật: </label><br />
+                                    @Html.Raw(Model.Specifications)
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- /.col -->
+            <div class="col-md-12">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#devicenote" data-toggle="tab">Nhật ký thiết bị</a></li>
+                        <li><a href="#devicetransfer" data-toggle="tab">Lịch sử điều chuyển thiết bị</a></li>
+                        <li><a href="#maintainancenote" data-toggle="tab">Nhật ký bảo dưỡng</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="active tab-pane" id="devicenote">
+                            <div class="box-body">
+                                @using (Html.BeginForm("DeviceNoteList", "Device", FormMethod.Post, new { id = "deviceListForm" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="Search.DeviceId" value="@Model.Id"/>
+                                    <div class="col-md-12">
+                                        <button class="btn btn-success" type="submit" name="ButtonValue" value="exportExcel"><i class="fa fa-file-excel-o"></i>&nbsp; Xuất excel</button>
+                                    </div>
+                                    if (Model.DeviceNotes != null && Model.DeviceNotes.Count > 0)
+                                    {
+                                        <table id="tblDeviceList" class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" width="30px">TT</th>
+                                                    <th>Ghi chú</th>
+                                                    <th>Tình trạng lưu nhật ký</th>
+                                                    <th>Người tạo</th>
+                                                    <th>Ngày tạo</th>
+                                                    <th width="60px"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @{foreach (var item in Model.DeviceNotes)
+                                                    {
+                                                        <tr>
+                                                            <td></td>
+                                                            <td colspan="4">
+                                                                <strong>Thiết bị: </strong>@item.DeviceName &nbsp;
+                                                                <strong>Đơn vị quản lý: </strong>@item.FactoryName
+                                                            </td>
+                                                            <td>
+                                                                @if (baseController.HasRole((int)AntData.TKV.Helper.ActionEnum.Update))
+                                                                {
+                                                                    <a href="#" title="Thêm ghi chú thiết bị" onclick="openNote(@item.DeviceId, '@item.DeviceName', '@item.FactoryName');">
+                                                                        <i class="fa fa-fw fa-sticky-note-o"></i>
+                                                                    </a>
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                        var index = 1;
+                                                        foreach (var itemCol in item.DeviceNoteList)
+                                                        {
+                                                            <tr>
+                                                                <td class="text-center">@index</td>
+                                                                <td>@itemCol.Note</td>
+                                                                <td>@itemCol.DeviceStatusCaption</td>
+                                                                <td>@itemCol.UserNote</td>
+                                                                <td>@itemCol.DateUpdated.ToString("dd/MM/yyyy HH:mm")</td>
+                                                            </tr>
+                                                            index++;
+                                                        }
+                                                    }
+                                                }
+
+                                            </tbody>
+                                            <tfoot>
+
+                                            </tfoot>
+                                        </table>
+                                                    }
+                                                    else
+                                                    {
+                                                        <h4 style="color: red;">Chưa có thông tin!</h4>
+                                                    }
+                                                    }
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="devicetransfer">
+                            @if (Model.DevicesTransfer != null && Model.DevicesTransfer.DeviceTransfer != null && Model.DevicesTransfer.DeviceTransfer.Any())
+                            {
+                                <!-- The timeline -->
+                                <ul class="timeline timeline-inverse">
+                                    @foreach (var item in Model.DevicesTransfer.DeviceTransfer)
+                                    {
+                                        <li class="time-label">
+                                            @if (item.Approved == 1)
+                                            {
+                                                <span class="bg-aqua">
+                                                    @item.TransferDate.ToString("dd-MM-yyyy")
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="bg-red">
+                                                    @item.TransferDate.ToString("dd-MM-yyyy")
+                                                </span>
+                                            }
+                                            <div class="timeline-item" style="margin-top:16px">
+                                                <span class="time"><i class="fa fa-clock-o"></i>@item.CreatedDate.ToString("dd/MM/yyyy HH:mm")</span>
+                                                <h3 class="timeline-header">Điều chuyển thiết bị từ đơn vị: <a href="#">@item.CurrentFactoryName</a> đến <a href="#">@item.TargetFactoryName </a></h3>
+                                                <div class="timeline-body">
+                                                    Số lượng: @item.Quantity <br />
+                                                    Ghi chú: @item.Description <br />
+
+                                                </div>
+                                                <div class="timeline-footer">
+                                                    Trạng thái: @if (item.Approved == 1)
+                                                    {
+                                                        <label class="text-info">Đã duyệt</label>
+                                                    }
+                                                    else if (item.Approved == 0)
+                                                    {
+                                                        <label class="text-danger">Chưa duyệt</label>
+                                                        if (baseController.IsAdmin)
+                                                        {
+                                                            <a class="btn btn-info btn-sm" onclick="approved(@item.Id, 1, '@item.TransferDate.ToString("dd/MM/yyyy")', '@item.CurrentFactoryName', '@item.TargetFactoryName')">Nhận về đơn vị</a>
+                                                            <a class="btn btn-warning btn-sm" onclick="approved(@item.Id, -1, '@item.TransferDate.ToString("dd/MM/yyyy")', '@item.CurrentFactoryName', '@item.TargetFactoryName')">Hủy</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            if (baseController.IsFactory(item.TargetFactory))
+                                                            {
+                                                                if (baseController.HasRole((int)AntData.TKV.Helper.ActionEnum.ApprovedTranfer))
+                                                                {
+                                                                    <a class="btn btn-info btn-sm" onclick="approved(@item.Id, 1, '@item.TransferDate.ToString("dd/MM/yyyy")', '@item.CurrentFactoryName', '@item.TargetFactoryName')">Nhận về đơn vị</a>
+                                                                    <a class="btn btn-warning btn-sm" onclick="approved(@item.Id, -1, '@item.TransferDate.ToString("dd/MM/yyyy")', '@item.CurrentFactoryName', '@item.TargetFactoryName')">Hủy</a>
+                                                                }
+                                                            }
+
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <label class="text-danger">Hủy</label>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </li>
+                                    }
+                                    <!-- timeline item -->
+                                    <li>
+                                        <i class="fa fa-clock-o bg-gray"></i>
+                                    </li>
+                                </ul>
+                            }
+                            else
+                            {
+                                <h4 style="color:red;">Chưa có thông tin!</h4>
+                            }
+                        </div>
+
+                        <div class="tab-pane" id="maintainancenote">
+                            <div class="box-body">
+                                @if (Model.MaitainanceModel != null && Model.MaitainanceModel.Maintainances.Count > 0)
+                                {
+                                    <table id="tblDeviceList" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center" width="30px">TT</th>
+                                                <th>Tên thiết bị</th>
+                                                <th>Đơn vị quản lý</th>
+                                                <th>Đơn vị đăng ký bảo dưỡng</th>
+                                                <th>Ngày bảo dưỡng</th>
+                                                <th>Số ngày tới bảo dưỡng</th>
+                                                <th>Thao tác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                var indexCat = 1;
+
+                                            }
+                                            @foreach (var item in Model.MaitainanceModel.Maintainances)
+                                            {
+                                                indexCat++;
+
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <strong>@AntData.TKV.Helper.RomanNumber.ConvertToRoman(indexCat)</strong>
+                                                    </td>
+                                                    <td>
+                                                        <strong>@item.DeviceName</strong>
+                                                    </td>
+                                                    <td>
+                                                        @item.DeviceManageName
+                                                    </td>
+                                                    <td>
+                                                        @item.FactoryName
+                                                    </td>
+                                                    <td>
+                                                        @item.Date.ToString("dd/MM/yyyy")
+                                                    </td>
+                                                    <td style="font-weight:bold; color:red;">
+                                                        @if (item.Date.Date >= DateTime.Today)
+                                                        {
+                                                            <span>
+                                                                @{
+                                                                    var days = (item.Date.Date - DateTime.Today).Days;
+
+                                                                    if (days == 0)
+                                                                    {
+                                                                        <text><span style="font-weight:bold; color:red;">HÔM NAY</span></text>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <text> <span style="font-weight:bold; color:orange;">@days Ngày</span> </text>
+                                                                    }
+                                                                }
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <text><span style="font-weight:bold; color:green;">Đã bảo dưỡng ngày: @item.Date.ToString("dd/MM/yyyy")</span></text>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if (baseController.HasRole((int)AntData.TKV.Helper.ActionEnum.Update))
+                                                        {
+                                                            <a href="#" title="Cập nhật">
+                                                                    <i class="fa fa-fw fa-pencil"></i>
+                                                                </a>
+                                                                <a href="#" title="Xóa">
+                                                                    <i class="fa fa-times"></i>
+                                                                </a>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+
+                                        </tbody>
+                                        <tfoot>
+
+                                        </tfoot>
+                                    </table>
+                                }
+                                else
+                                {
+                                    <h4 style="color:red;">Chưa có thông tin!</h4>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- /.tab-pane -->
+                    </div>
+                    <!-- /.tab-content -->
+                </div>
+                <!-- /.nav-tabs-custom -->
+            </div>
+            <!-- /.col -->
+        </div>
+
+    </section>
+    @Html.Partial("_DeviceTransferPopup", Model)
+    @Html.Partial("_DeviceNotePopup", Model)
+    @Html.Partial("_DeviceMaitainancePopup", Model)
+    @Html.Partial("_DeviceLiquidatePopup", Model)
+
+    <script type="text/javascript">
+        function openNote(id, deviceName, factoryName) {
+            $("#modal-devicenote").modal('show');
+            $("#noteTitle").text(deviceName);
+            $("#popupDeviceId").val(id);
+            $("#noteMessage").text("");
+            $("#deviceNote").val("");
+            $("#factoryName").text(factoryName);
+
+            if (factoryName === '' && deviceName === '') {
+                $("#titleDeviceNotePopup").addClass("hidden");
+            }
+            else {
+                $("#titleDeviceNotePopup").removeClass("hidden");
+            }
+
+        };
+
+        function openMaitaince(deviceId, deviceName, currentFactoryId, currentFactoryName, currentQuantity, targetFactoryName) {
+            $("#modal-maintaince").modal('show');
+            $("#deviceMaintainName").text(deviceName);
+            $("#deviceMaintainId").val(deviceId);
+            $("#MaitainMessage").text("");
+            $("#deviceMaintainNote").val("");
+            $("#currentMaitainFactoryName").text(currentFactoryName);
+            
+            if (factoryName === '' && deviceName === '') {
+                $("#titleDeviceNotePopup").addClass("hidden");
+            }
+            else {
+                $("#titleDeviceNotePopup").removeClass("hidden");
+            }
+        };
+
+    </script>
+    <script type="text/javascript">
+
+        function openTransfer(deviceId, deviceName, currentFactoryId, currentFactoryName, currentQuantity, targetFactoryName) {
+            $("#modal-devicetransfer").modal('show');
+            $("#deviceTranferName").text(deviceName);
+            $("#deviceId").val(deviceId);
+            $("#targetFactoryId").val("");
+            $("#currentFactoryName").text(currentFactoryName);
+            $("#currentFactoryId").val(currentFactoryId);
+            $("#deviceTranferNote").val("");
+            $("#quantityTransfer").val("");
+            $("#transferMessage").text("");
+            $("#currentQuantity").val(currentQuantity);
+        }
+        function approved(id, status, transferDate, currentFactoryName, targetFactoryName) {
+            var str = "Bạn có chắc chắn muốn nhận thiết bị này về đơn vị?";
+            if (status == -1) {
+                str = "Bạn có chắc chắn muốn hủy nhận thiết bị này về đơn vị?";
+            }
+            var r = confirm(str);
+            if (r == true) {
+                $.ajax({
+                    method: "POST",
+                    url: "/device/devicetransferapproved",
+                    data: {
+                        Id: id,
+                        Status: status,
+                        TransferDate: transferDate,
+                        CurrentFactoryName: currentFactoryName,
+                        TargetFactoryName: targetFactoryName
+                    }
+                })
+                    .done(function (msg) {
+                        if (msg.Status == 1) {
+                            if (status == 1) {
+                                alert("Bạn đã nhận về đơn vị thành công!");
+                            }
+                            else {
+                                alert("Bạn đã hủy thành công!");
+                            }
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 500);
+                        }
+                        else {
+                            alert("Không thực hiện được thao tác!");
+                        }
+                    });
+            }
+        };
+
+        function Liquidate(id, status) {
+            
+            $("#dvId").val(id);
+            $("#modal-deviceLiquidate").modal('show');
+        };
+
+    </script>
+                                                                    }
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#devicedevice").addClass("active");
+            $("#category").addClass("active menu-open");
+        });
+    </script>
+}

@@ -1,0 +1,471 @@
+﻿@using AmuLab.WebApp.Controllers
+@using AntData.TKV.Controllers
+@model AmuLab.Core.Models.DeviceModel
+@{
+    ViewBag.Title = "Thêm mới thiết bị";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var baseController = ViewContext.Controller as BaseController;
+}
+<link rel="stylesheet" href="~/Content/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+<style>
+    .select2-container--default .select2-selection--single {
+        height: 35px;
+        border-radius: 0px;
+    }
+</style>
+<section class="content-header">
+    <h1>
+        Thêm mới thiết bị
+    </h1>
+    @*<ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Dashboard</li>
+        </ol>*@
+</section>
+<section class="content">
+    <div class="box box-default">
+        <div class="box-header with-border">
+            @*<h3 class="box-title"></h3>*@
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+                @using (Html.BeginForm("Index", "Device", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Đơn vị quản lý <span style="color:red;">(*)</span></label>
+                            <select class="form-control select2" id="optionFactory" style="width: 100%;" name="FactoryId">
+                                @if (Model.FactoryId > 0)
+                                {
+                                    <option value="@Model.FactoryId" selected="selected">@Model.FactoryName</option>
+                                }
+                            </select>
+                            @Html.HiddenFor(m => m.FactoryName, new { @class = "form-control", @id = "FactoryName" })
+                            @Html.ValidationMessageFor(m => m.FactoryName, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            <label>Tên thiết bị <span style="color:red;">(*)</span></label>
+                            <select class="form-control select2" id="optionDeviceName" style="width: 100%;">
+                                @if (!string.IsNullOrEmpty(Model.Name))
+                                {
+                                    <option value="@Model.DeviceBaseId" selected="selected">@Model.Name</option>
+                                }
+                            </select>
+                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @id = "deviceName", @type = "hidden" })
+                            @Html.TextBoxFor(m => m.DeviceBaseId, new { @class = "form-control", @type = "hidden" })
+                            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            <label>Danh mục thiết bị <span style="color:red;">(*)</span></label>
+                            <select class="form-control select2" id="optionDeviceCategory" style="width: 100%;" name="DeviceCategoryId">
+                                @if (Model.DeviceCategoryId.HasValue)
+                                {
+                                    <option value="@Model.DeviceCategoryId.Value" selected="selected">@Model.DeviceCategoryName</option>
+                                }
+                            </select>
+                            @Html.HiddenFor(m => m.DeviceCategoryName, new { @class = "form-control", @id = "DeviceCategoryName" })
+                            @Html.ValidationMessageFor(m => m.DeviceCategoryId, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            <label>Đơn vị tính <span style="color:red;">(*)</span></label>
+                            <select class="form-control select2" id="optionUnit" data-placeholder="Chọn đơn vị tính" style="width: 100%;" name="UnitId">
+                                @if (Model.UnitId.HasValue)
+                                {
+                                    <option value="@Model.UnitId.Value" selected="selected">@Model.UnitName</option>
+                                }
+                            </select>
+                            @Html.HiddenFor(m => m.UnitName, new { @class = "form-control", @id = "UnitName" })
+                            @Html.ValidationMessageFor(m => m.UnitId, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tình trạng <span style="color:red;">(*)</span></label>
+                            <select class="form-control select2" id="optionDeviceStatus" style="width: 100%;"></select>
+                            @Html.TextBoxFor(m => m.Status, new { @class = "form-control", @type = "hidden", @id = "deviceStatus" })
+                            <input type="hidden" id="deviceStatusName" />
+                            @Html.ValidationMessageFor(m => m.Status, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            <label>Thời gian đưa vào sử dụng</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                @Html.TextBoxFor(m => m.YearToUse, new { @class = "form-control pull-right", @type = "text", @id = "inputYearToUse", @autocomplete = "off" })
+                                @Html.TextBoxFor(m => m.YearToUse, new { @class = "form-control", @type = "hidden", @id = "yearToUse" })
+                                @Html.TextBoxFor(m => m.YearToUseStr, new { @class = "form-control", @type = "hidden", @id = "yearToUseStr" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Số tài sản <span style="color:red;">(*)</span></label>
+                            @Html.TextBoxFor(m => m.AssetNumber, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Số quyết định điều động</label>
+                            @Html.TextBoxFor(m => m.NumberOfTransfer, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label>Thiết bị điều khiển</label>
+                            @Html.TextBoxFor(m => m.ControlDevice, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label>Số quản lý</label>
+                            @Html.TextBoxFor(m => m.NumberOfManagement, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label>Số lượng <span style="color:red;">(*)</span></label>
+                            @Html.TextBoxFor(m => m.UnitQuantity, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.UnitQuantity, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            <label>Vị trí lắp đặt</label>
+                            @Html.TextBoxFor(m => m.InstallationLocation, new { @class = "form-control", })
+                        </div>
+
+                        <div class="form-group">
+                            <label>Ghi chú</label>
+                            @Html.TextAreaFor(m => m.Note, new { @class = "form-control" })
+                        </div>
+
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Thông số kỹ thuật</label>
+                            @Html.TextAreaFor(m => m.Specifications, new { @id = "specifications", @class = "form-control", @rows = "8", @style = "width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" })
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group text-danger">
+                            @Html.ValidationMessage("Error")
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-actions">
+                            @if (baseController.HasRole((int)AntData.TKV.Helper.ActionEnum.Add))
+                            {
+                                <button type="submit" class="btn btn-info"><i class="fa fa-fw fa-plus"></i> Thêm mới</button>
+                            }
+                            <a href="/device/devicelist" class="btn btn-default"><i class="fa fa-fw fa-list"></i> Danh sách</a>
+                        </div>
+                    </div>
+
+                }
+
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+</section>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetCategoryDevice", "Device")",
+            dataType: "json",
+            data: {
+                Pattern: '',
+                Offset: 0,
+                Limit: 10000000
+            },
+            success: function(response) {
+                $("#optionDeviceCategory").select2({
+                    closeOnSelect: true,
+                    data: response,
+                    placeholder: 'Chọn đơn vị'
+                });
+            }
+        });
+
+        @*$("#optionDeviceCategory").select2({
+            minimumInputLength: 0,
+            allowClear: true,
+            multiple: false,
+            ajax: {
+                url: '@Url.Action("GetCategoryDevice", "Device")',
+                dataType: 'json',
+                type: "POST",
+                data: function (params) {
+                    return {
+                        Pattern: params.term,
+                        Offset: (params.page || 0) * 10,
+                        Limit: 10
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 0;
+                    console.log(data);
+                    return {
+                        results: data,
+                        pagination: {
+                            more: data.length >= 10 * params.page
+                        }
+                    };
+                }
+            },
+            placeholder: 'Chọn danh mục',
+            escapeMarkup: function (markup) { return markup; },
+            templateResult: function (results) {
+                if (results) {
+                    var rs = JSON.stringify(results);
+                    var json = JSON.parse(rs);
+                    return "<div title='" + json["text"] + "' id='" + json["id"] + "'>" + json["text"] + "</div>";
+                }
+                return "<div title='' id=''></div>";
+            },
+            templateSelection: function (results) {
+                return "<div style='float:left;' id='" + results.id + "'>" + results.text + "</div>";
+            }
+        });*@
+
+        $("#optionDeviceCategory").on('select2:select',
+            function (e) {
+                var item = e.params.data;
+                $("#DeviceCategoryName").val(item.text);
+            });
+        $("#optionDeviceCategory").on('select2:unselect',
+            function (e) {
+                $("#DeviceCategoryName").val('');
+            });
+
+        $("#device-index").addClass("active");
+        $("#category").addClass("active menu-open");
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetUnit", "Device")",
+            dataType: "json",
+            data: {
+                Pattern: '',
+                Offset: 0,
+                Limit: 10000000
+            },
+            success: function(response) {
+                $("#optionUnit").select2({
+                    closeOnSelect: true,
+                    data: response,
+                    placeholder: 'Chọn đơn vị'
+                });
+            }
+        });
+
+        @*$("#optionUnit").select2({
+            minimumInputLength: 0,
+            allowClear: true,
+            multiple: false,
+            ajax: {
+                url: '@Url.Action("GetUnit","Device")',
+                dataType: 'json',
+                type: "POST",
+                data: function (params) {
+                    return {
+                        Pattern: params.term,
+                        Offset: (params.page || 0) * 10,
+                        Limit: 10
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 0;
+                    console.log(data);
+                    return {
+                        results: data,
+                        pagination: {
+                            more: data.length >= 10 * params.page
+                        }
+                    };
+                }
+            },
+            placeholder: 'Chọn đơn vị tính',
+            escapeMarkup: function (markup) { return markup; },
+            templateResult: function (results) {
+                if (results) {
+                    var rs = JSON.stringify(results);
+                    var json = JSON.parse(rs);
+                    return "<div title='" + json["text"] + "' id='" + json["id"] + "'>" + json["text"] + "</div>";
+                }
+                return "<div title='' id=''></div>";
+            },
+            templateSelection: function (results) {
+                return "<div style='float:left;' id='" + results.id + "'>" + results.text + "</div>";
+            }
+        });*@
+
+        $("#optionUnit").on('select2:select',
+            function (e) {
+                var item = e.params.data;
+                $("#UnitName").val(item.text);
+            });
+        $("#optionUnit").on('select2:unselect',
+            function (e) {
+                $("#UnitName").val('');
+            });
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetFactory", "Device")",
+            dataType: "json",
+            data: {
+                Pattern: '',
+                Offset: 0,
+                Limit: 10000000
+            },
+            success: function(response) {
+                $("#optionFactory").select2({
+                    closeOnSelect: true,
+                    data: response,
+                    placeholder: 'Chọn đơn vị'
+                });
+            }
+        });
+
+        @*$("#optionFactory").select2({
+            minimumInputLength: 0,
+            allowClear: true,
+            multiple: false,
+            ajax: {
+                url: '@Url.Action("GetFactory","Device")',
+                dataType: 'json',
+                type: "POST",
+                data: function (params) {
+                    return {
+                        Pattern: params.term,
+                        Offset: (params.page || 0) * 10,
+                        Limit: 10
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 0;
+                    console.log(data);
+                    return {
+                        results: data,
+                        pagination: {
+                            more: data.length >= 10 * params.page
+                        }
+                    };
+                }
+            },
+            placeholder: 'Chọn khu vực',
+            escapeMarkup: function (markup) { return markup; },
+            templateResult: function (results) {
+                if (results) {
+                    var rs = JSON.stringify(results);
+                    var json = JSON.parse(rs);
+                    return "<div title='" + json["text"] + "' id='" + json["id"] + "'>" + json["text"] + "</div>";
+                }
+                return "<div title='' id=''></div>";
+            },
+            templateSelection: function (results) {
+                return "<div style='float:left;' id='" + results.id + "'>" + results.text + "</div>";
+            }
+        });*@
+
+        $("#optionFactory").on('select2:select',
+            function(e) {
+                var item = e.params.data;
+                $("#FactoryName").val(item.text);
+            });
+        $("#optionFactory").on('select2:unselect',
+            function(e) {
+                $("#FactoryName").val('');
+            });
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("DeviceStatus","Device")",
+            dataType: "json",
+            success: function (response) {
+                $("#optionDeviceStatus").select2({
+                    closeOnSelect: true,
+                    data: response.Data,
+                    placeholder: 'Chọn tình trạng thiết bị',
+                })
+                    .on("change", function (e) {
+                        var deviceStatusData = $("#optionDeviceStatus").select2('data');
+                        $("#deviceStatus").val(deviceStatusData[0].id);
+                        $("#deviceStatusName").val(deviceStatusData[0].text);
+                        //$("#popupDeviceStatus").val($("#optionDeviceStatus").val());
+                    });
+            }
+        });
+
+        $('#inputYearToUse').datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true
+        }).on('changeDate', function (ev) {
+            $("#yearToUseStr").val(ev.date.toString("dd/mm/yyyy"));
+            $("#yearToUse").val(ev.date);
+        });
+
+        $("#optionDeviceName").select2({
+            minimumInputLength: 1,
+            allowClear: true,
+            multiple: false,
+            tags: true,
+            tokenSeparators: [',', ';', ""],
+            ajax: {
+                url: '@Url.Action("SearchDeviceBaseForSelect2","DeviceBase")',
+                dataType: 'json',
+                type: "GET",
+                data: function (params) {
+                    return {
+                        q: params.term,
+                        pageIndex: (params.page || 1),
+                        pageSize: 10
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.Data,
+                        pagination: {
+                            more: data.Data.length >= params.page * 10
+                        }
+                    };
+                }
+            },
+            placeholder: 'Chọn tên thiết bị',
+            dropdownParent: $("#optionDeviceName").parent(),
+            escapeMarkup: function (markup) { return markup; },
+            templateResult: function (results) {
+                if (results) {
+                    var rs = JSON.stringify(results);
+                    var json = JSON.parse(rs);
+                    return "<div title='" + json["text"] + "' id='" + json["id"] + "'>" + json["text"] + "</div>";
+                }
+                return "<div title='' id=''></div>";
+            },
+            templateSelection: function (results) {
+                $("#deviceName").val(results.text);
+                if (!isNaN(results.id)) {
+                    $('#DeviceBaseId').val(results.id);
+                } else {
+                    $('#DeviceBaseId').val('');
+                }
+                return "<div style='float:left;' id='" + results.id + "'>" + results.text + "</div>";
+            }
+        });
+
+        $('#optionDeviceName').on('select2:unselect', function (e) {
+            $("#deviceName").val('');
+            $('#DeviceBaseId').val('');
+        });
+    });
+
+</script>
+@section scripts{
+    <script src="~/Content/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js" type="text/javascript"></script>
+    <script>
+        $(document).ready(function () {
+            $("#devicelist").addClass("active");
+            $("#category").addClass("active menu-open");
+            $('#specifications').wysihtml5();
+        });
+    </script>
+}
+

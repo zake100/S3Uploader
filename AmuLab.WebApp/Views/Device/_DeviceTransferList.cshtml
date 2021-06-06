@@ -1,0 +1,74 @@
+﻿@model List<AntData.TKV.Business.Models.DeviceTransferModel>
+@if (Model != null && Model.Count > 0)
+{
+<div class="row">
+    <!-- /.col -->
+    <div class="col-md-12">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#devicetransfer" data-toggle="tab">Lịch sử điều chuyển thiết bị</a></li>
+
+                @*<li class="active"><a href="#activity" data-toggle="tab">Activity</a></li>
+                    <li><a href="#settings" data-toggle="tab">Settings</a></li>*@
+            </ul>
+            <div class="tab-content">
+                <div class="active tab-pane" id="devicetransfer">
+                    <!-- The timeline -->
+                    <ul class="timeline timeline-inverse">
+                        @foreach (var item in Model)
+                        {
+                            <li class="time-label">
+                                @if (item.Approved == 1)
+                                {
+                                    <span class="bg-aqua">
+                                        @item.TransferDate.ToString("dd-MM-yyyy")
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="bg-red">
+                                        @item.TransferDate.ToString("dd-MM-yyyy")
+                                    </span>
+                                }
+                                <div class="timeline-item" style="margin-top:16px">
+                                    <span class="time"><i class="fa fa-clock-o"></i>@item.CreatedDate.ToString("dd/MM/yyyy HH:mm")</span>
+                                    <h3 class="timeline-header">Điều chuyển thiết bị từ đơn vị: <a href="#">@item.CurrentFactoryName</a> đến <a href="#">@item.TargetFactoryName </a></h3>
+                                    <div class="timeline-body">
+                                        Số lượng: @item.Quantity <br />
+                                        Ghi chú: @item.Description <br />
+
+                                    </div>
+                                    <div class="timeline-footer">
+                                        Trạng thái: @if (item.Approved == 1)
+                                        {
+                                            <label class="text-info">Đã duyệt</label>
+                                        }
+                                        else if (item.Approved == 0)
+                                        {
+                                            <label class="text-danger">Chưa duyệt</label>
+                                            <a class="btn btn-info btn-sm" onclick="approved(@item.Id, 1, '@item.TransferDate.ToString("dd/MM/yyyy")', '@item.CurrentFactoryName', '@item.TargetFactoryName')">Duyệt</a>
+                                            <a class="btn btn-warning btn-sm" onclick="approved(@item.Id, -1, '@item.TransferDate.ToString("dd/MM/yyyy")', '@item.CurrentFactoryName', '@item.TargetFactoryName')">Hủy</a>
+                                        }
+                                        else
+                                        {
+                                            <label class="text-danger">Hủy</label>
+                                        }
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                        <!-- timeline item -->
+                        <li>
+                            <i class="fa fa-clock-o bg-gray"></i>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+        </div>
+        <!-- /.nav-tabs-custom -->
+    </div>
+    <!-- /.col -->
+</div>
+}

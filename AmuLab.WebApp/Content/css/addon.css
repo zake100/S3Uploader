@@ -1,0 +1,7 @@
+﻿.order-col { width: 50px; text-align: center; }
+.center-col{text-align: center;}
+.nav  > li{ cursor:pointer; }
+
+li.ng-scope {
+    cursor: pointer;
+}

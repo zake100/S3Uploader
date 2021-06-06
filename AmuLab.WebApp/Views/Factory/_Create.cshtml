@@ -1,0 +1,44 @@
+﻿@model AntData.TKV.Business.Models.FactoryModel
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Thêm mới</h3>
+    </div>
+    <div class="box-body">
+        @using (Html.BeginForm("Index", "Factory", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+        <div class="form-body">
+            <div class="row">
+                <div class="col-md-6 col-xs-6">
+                    <div class="form-group">
+                        <label>Tên đơn vị <span style="color:red;">(*)</span></label>
+                        <div class="input-group" style="width:90%;">
+                            @Html.TextBoxFor(m => m.Factory.Name, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xs-6">
+                    <div class="form-group">
+                        <label>Đơn vị bảo dưỡng?</label>
+                        <div class="input-group">
+                            <label>
+                                @Html.CheckBoxFor(m => m.Factory.IsMaintainance, new { @class = "minimal" })
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="form-group text-danger">
+                        @Html.ValidationMessage("error")
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i> Thêm mới</button>
+            </div>
+        }
+    </div>
+</div>

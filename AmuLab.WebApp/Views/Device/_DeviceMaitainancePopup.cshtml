@@ -1,0 +1,213 @@
+﻿<div class="modal fade" id="modal-maintaince">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">
+                    Đăng ký bảo dưỡng thiết bị định kỳ
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="box-body">
+                        <div class="form-group">
+                            Tên thiết bị: <label id="deviceMaintainName"></label>
+                        </div>
+                        <div class="form-group">
+                            Đơn vị quản lý hiện tại: <label id="currentMaitainFactoryName"></label>
+                            <input type="hidden" id="currentMaitainFactoryId" />
+                            <input type="hidden" id="deviceMaintainId" />
+                        </div>
+                        <div class="form-group">
+                            <label>Đơn vị bảo dưỡng</label>
+                            <select class="form-control select2" id="optionFactoryMaitain" style="width: 100%;"></select>
+                            <input type="hidden" id="targetMaintainFactoryId" />
+                            <input type="hidden" id="targetMaintainFactoryName" />
+                            <input type="hidden" id="currentMaintainQuantity" />
+                        </div>
+                        <div class="form-group">
+                            <label>Ngày đăng ký bảo dưỡng</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" id="maitainanceDate">
+                                <input type="hidden" class="form-control pull-right " id="maitainanceDateTime">
+                            </div>
+                        </div>
+                        @*<div class="form-group">
+                                <label>Tình trạng thiết bị</label>
+                                <select class="form-control select2" id="optionDeviceStatusMaintain" style="width: 100%;"></select>
+                                <input type="hidden" id="popupDeviceStatusMaintain" />
+                                <input type="hidden" id="popupDeviceStatusNameMaitain" />
+                            </div>*@
+                        <div class="form-group">
+                            <label>Ghi chú</label>
+                            <textarea id="deviceMaintainNote" class="form-control" rows="4" placeholder="Ghi chú"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <span id="MaitainMessage" class=""></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="popupDeviceMaintainAdd">Đăng ký bảo dưỡng</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
+<script>
+    //$.ajax({
+    //    type: "GET",
+    //    url: "/device/getfactory?self=1&isMaintainance=true",
+    //    dataType: "json",
+    //    success: function (response) {
+    //        $("#optionFactoryMaitain").select2({
+    //            closeOnSelect: true,
+    //            data: response.Data,
+    //            placeholder: 'Chọn đơn vị bảo dưỡng',
+    //        })
+    //        .on("change", function (e) {
+    //            var factoryData = $("#optionFactoryMaitain").select2('data');
+    //            $("#targetMaintainFactoryId").val($("#optionFactoryMaitain").val());
+    //            $("#targetMaintainFactoryName").val(factoryData[0].text);
+    //        });
+    //    }
+    //});
+
+    $.ajax({
+        type: "POST",
+        url: "@Url.Action("GetFactory2", "Device")",
+        dataType: "json",
+        data: {
+            Pattern: '',
+            Offset: 0,
+            Limit: 10000000
+        },
+        success: function(response) {
+            $("#optionFactoryMaitain").select2({
+                closeOnSelect: true,
+                data: response,
+                placeholder: 'Chọn đơn vị'
+            });
+        }
+    });
+
+    $("#optionFactoryMaitain").on('select2:select',
+        function (e) {
+            var results = e.params.data;
+            $("#targetMaintainFactoryId").val(results.id);
+            $("#targetMaintainFactoryName").val(results.text);
+        });
+
+    @*$("#optionFactoryMaitain").select2({
+        minimumInputLength: 0,
+        allowClear: true,
+        multiple: false,
+        ajax: {
+            url: '@Url.Action("SearchFactoryPaging", "Factory")',
+            dataType: 'json',
+            type: "POST",
+            data: function (params) {
+                return {
+                    name: params.term,
+                    isMaintainance: true,
+                    pageNumber: (params.page || 1),
+                    pageSize: 10
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+                return {
+                    results: data.data,
+                    pagination: {
+                        more: params.page * 10 < data.total_count && data.total_count > 10
+                    }
+                };
+            }
+        },
+        placeholder: 'Chọn lịch bảo dưỡng',
+        //dropdownParent: $('#factoryForMaintainance').parent(),
+        escapeMarkup: function (markup) { return markup; },
+        templateResult: function (results) {
+            if (results) {
+                var rs = JSON.stringify(results);
+                var json = JSON.parse(rs);
+                return "<div title='" + json["text"] + "' id='" + json["id"] + "'>" + json["text"] + "</div>";
+            }
+            return "<div title='' id=''></div>";
+        },
+        templateSelection: function (results) {
+            $("#targetMaintainFactoryId").val(results.id);
+            $("#targetMaintainFactoryName").val(results.text);
+            return "<div style='float:left;' id='" + results.id + "'>" + results.text + "</div>";
+        }
+    });*@
+
+    $(document).ready(function () {
+        $('#maitainanceDate').datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true
+        }).on('changeDate', function (ev) {
+            if (ev && ev.date) {
+                var dateValue = ev.date;
+                var dd = dateValue.getDate();
+                var mm = dateValue.getMonth() + 1; //January is 0!
+
+                var yyyy = dateValue.getFullYear();
+
+                if (dd < 10) {
+                    dd = '0' + dd;
+                }
+                if (mm < 10) {
+                    mm = '0' + mm;
+                }
+                var expectedDate = dd + '/' + mm + '/' + yyyy;
+                $("#maitainanceDateTime").val(expectedDate);
+            }
+            else {
+                $("#maitainanceDateTime").val('');
+            }
+            });
+
+        $("#popupDeviceMaintainAdd").on('click', function () {
+            var r = confirm("Bạn có chắc chắn đăng ký bảo dưỡng cho thiết bị đến đơn vị: " + $("#targetMaintainFactoryName").val());
+
+            if (r == true) {
+                $.ajax({
+                    method: "POST",
+                    url: "/device/devicemaintainceadd",
+                    data: {
+                        DeviceId: $("#deviceMaintainId").val(),
+                        FactoryId: $("#optionFactoryMaitain").val(),
+                        Date: $("#maitainanceDate").val(),
+                        Note: $("#deviceMaintainNote").val(),
+                        maitainanceDateTime: $("#maitainanceDateTime").val()
+                    }
+                })
+                .done(function (msg) {
+                    if (msg.Id > 1) {
+                        $("#MaitainMessage").text(msg.Message).removeClass("text-danger").addClass("text-info");
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1000);
+                    }
+                    else {
+                        $("#MaitainMessage").text(msg.Message).addClass("text-danger");
+                    }
+                });
+            }
+        });
+    });
+</script>

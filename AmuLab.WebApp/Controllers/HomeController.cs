@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 
 namespace AmuLab.WebApp.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
+
+        public HomeController()
+        {
+        }
         public ActionResult Index()
         {
             return View();
@@ -24,6 +24,20 @@ namespace AmuLab.WebApp.Controllers
         {
             ViewBag.Message = "Your contact page.";
 
+            return View();
+        }
+        private string CurrentControllerName()
+        {
+            return $"{this.ControllerContext.RouteData.Values["controller"].ToString()}-{this.ControllerContext.RouteData.Values["action"].ToString()}".ToLower();
+        }
+
+        public ActionResult Welcome()
+        {
+            return View();
+        }
+
+        public ActionResult AccessDenied()
+        {
             return View();
         }
     }

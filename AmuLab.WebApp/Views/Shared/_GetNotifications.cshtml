@@ -1,0 +1,75 @@
+﻿@using AntData.TKV.Business.Enums
+@model IEnumerable<AntData.TKV.Business.Models.NotificationsSearchResponse>
+@{
+    var totalRecord = 0;
+    if (Model != null && Model.Any())
+    {
+        var item = Model.FirstOrDefault();
+        if (item != null)
+        {
+            totalRecord = item.TotalCount;
+        }
+    }
+}
+
+@*@if (totalRecord > 0)
+{*@
+    <li class="dropdown notifications-menu">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+            <i class="fa fa-bell"></i>
+            @if (totalRecord > 0)
+            {
+                <span class="label label-warning">@totalRecord</span>
+            }
+        </a>
+        <ul class="dropdown-menu">
+            @if (totalRecord > 0)
+            {
+                <li class="header">Bạn có @totalRecord thông báo</li>
+            }
+            else
+            {
+                <li class="header">Bạn không có thông báo</li>
+            }
+            <li>
+                <ul class="menu">
+                    @foreach (var item in Model)
+                    {
+                        switch (item.Type)
+                        {
+                            case (int) NotificationsEnum.NotificationType.Maintainance:
+                            {
+                                <li>
+                                    <a href="@Url.Action("DeviceDetail", "Device", new {id = item.DeviceId})">
+                                        <i class="fa fa-warning text-yellow"></i>
+                                        <span style="word-wrap: break-word; white-space: normal;">Lịch bảo dưỡng: @item.DeviceName tại đơn vị @item.FactoryName</span>
+                                    </a>
+                                </li>
+                                break;
+                            }
+                            case (int) NotificationsEnum.NotificationType.TransferFactory:
+                            {
+                                <li>
+                                    <a href="@Url.Action("DeviceDetail", "Device", new {id = item.DeviceId})">
+                                        <i class="fa fa-warning text-yellow"></i>
+                                        <span style="word-wrap: break-word; white-space: normal;">Chuyển đơn vị: @item.DeviceName chuyển tới đơn vị @item.FactoryName</span>
+                                    </a>
+                                </li>
+                                break;
+                            }
+                        }
+                    }
+                </ul>
+            </li>
+            <li class="footer"><a href="@Url.Action("Index", "Notification")">Xem tất cả</a></li>
+        </ul>
+    </li>
+@*}
+else
+{
+    <li>
+        <a href="@Url.Action("Index", "Notification")">
+            <i class="fa fa-bell"></i>
+        </a>
+    </li>
+}*@
