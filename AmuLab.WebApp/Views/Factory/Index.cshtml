@@ -1,0 +1,135 @@
+﻿@using AntData.TKV.Controllers
+@model AntData.TKV.Business.Models.FactoryModel
+@{
+    ViewBag.Title = "Danh mục thiết bị";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var baseController = ViewContext.Controller as BaseController;
+}
+<style>
+    .icheckbox_minimal-blue.checked.disabled {
+        background-position: -40px 0;
+    }
+</style>
+<section class="content-header">
+    <h1>
+        Quản lý đơn vị
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Dashboard</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+
+        @if (Model.Factory.Id > 0)
+        {
+            if (baseController.HasRole((int)AntData.TKV.Helper.ActionEnum.Update))
+            {
+                <div class="col-md-6">
+                    @Html.Partial("_Update", Model)
+                </div>
+            }
+        }
+        else
+        {
+            if (baseController.HasRole((int)AntData.TKV.Helper.ActionEnum.Add))
+            {
+                <div class="col-md-6">
+                    @Html.Partial("_Create", Model)
+                </div>
+            }
+        }
+
+
+
+        <div class="col-xs-6">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Danh sách đơn vị</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="example2" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Tên đơn vị</th>
+                                <th>Đơn vị bảo dưỡng</th>
+                                <th>Số lượng thiết bị</th>
+                                <th>Công cụ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Factorys != null && Model.Factorys.Count > 0)
+                            {
+                                foreach (var item in Model.Factorys)
+                                {
+                                    <tr>
+                                        <td>@item.Id</td>
+                                        <td>@item.Name</td>
+                                        <td class="text-center">
+                                            <input type="checkbox" class="minimal" checked="@item.IsMaintainance" disabled="disabled" />
+                                            @*@Html.CheckBox( item.IsMaintainance, new { @class = "minimal" })*@
+                                        </td>
+                                        <th>@item.NumberDevice</th>
+                                        <td class="text-center">
+                                            @if (baseController.HasRole((int)AntData.TKV.Helper.ActionEnum.Update))
+                                            {
+                                                <a href="/factory?id=@item.Id" title="Cập nhật">
+                                                    <i class="fa fa-fw fa-edit"></i>
+                                                </a>
+                                            }
+                                            <a title="Xem chi tiết" class="label label-info" onclick="seeDetail(@item.Id)">
+                                                <i class="fa fa-fw fa-edit"></i> Xem chi tiết
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                        @*<tfoot>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Name</th>
+                                    <th>Action</th>
+                                </tr>
+                            </tfoot>*@
+                    </table>
+                    @Html.Partial("_FactoryPaging", Model)
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+    </div>
+</section>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#factory-index").addClass("active");
+            $("#category").addClass("active menu-open");
+        });
+
+        function seeDetail(id) {
+            var f = document.createElement("form");
+            f.setAttribute('method', "post");
+            f.setAttribute('action', "/Device/DeviceList");
+
+
+            var i = document.createElement("input"); //input element, text
+            i.setAttribute('type', "text");
+            i.setAttribute('name', "Search.FactoryId");
+            i.setAttribute('value', id);
+
+            var i1 = document.createElement("input"); //input element, text
+            i1.setAttribute('type', "text");
+            i1.setAttribute('name', "ButtonValue");
+            i1.setAttribute('value', 'search');
+
+            f.appendChild(i);
+            f.appendChild(i1);
+            $(document.body).append(f);
+            f.submit();
+        }
+    </script>
+}

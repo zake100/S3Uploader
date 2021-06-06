@@ -1,0 +1,18 @@
+﻿.header-color-red {
+    background-color: #E31837;
+    color: #fff;
+}
+
+.header-color-blue {
+    background-color: #305496;
+    color: #fff;
+}
+
+.header-color-blue th{
+     vertical-align: middle !important;
+}
+
+.action-label {
+    cursor: pointer;
+    margin-right: 5px;
+}

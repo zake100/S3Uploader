@@ -1,0 +1,35 @@
+﻿@model AntData.TKV.Business.Models.DeviceBaseModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Device Base</h2>
+
+<div class="row">
+    <div class="col-md-6 col-sm-6">
+        <div class="row">
+            @using (Html.BeginForm("Index", "DeviceBase", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-body">
+                    <div class="form-group">
+                        <label>Thiet bi co so</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(m => m.Device.Name, new { @class = "form-control" })
+                            @*<input type="text" class="form-control" placeholder="Don vi tinh">*@
+                        </div>
+                    </div>
+                </div>
+                @Html.ValidationSummary()
+                <div class="form-actions">
+                    <button type="submit" class="btn blue">Thêm mới</button>
+                </div>
+
+            }
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-6">
+
+    </div>
+</div>

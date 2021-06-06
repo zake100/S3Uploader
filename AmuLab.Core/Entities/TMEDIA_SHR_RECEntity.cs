@@ -5,12 +5,12 @@
 
 using System;
 using System.Collections.Generic;
-using AmuLab.Core.Entities;
 
 namespace AmuLab.Core.Entities
 {
     public partial class TMEDIA_SHR_RECEntity : BaseEntity
     {
+        public long SHR_ID { get; set;}
         public long MEDIA_ID { get; set;}
         public long SHR_TO_ENTY_ID { get; set;}
         public long SHR_BY_ENTY_ID { get; set;}

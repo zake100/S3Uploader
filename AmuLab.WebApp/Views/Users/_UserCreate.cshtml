@@ -1,0 +1,150 @@
+﻿@model AntData.TKV.Business.Models.UsersModel
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">Thêm mới</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool " data-widget="collapse"><i class="fa fa-plus"></i></button>
+                    @*<button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>*@
+                </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">
+                    @using (Html.BeginForm("Index", "Users", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Tên đăng nhập</label>
+                                @Html.TextBoxFor(m => m.User.Username, new { @class = "form-control", @id = "username" })
+                                @Html.ValidationMessageFor(m => m.User.Username, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                <label>Mật khẩu</label>
+                                @Html.TextBoxFor(m => m.User.Password, new { @class = "form-control", @id = "password", @type = "password" })
+                                @Html.ValidationMessageFor(m => m.User.Password, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Họ, đệm</label>                                
+                                @Html.TextBoxFor(m => m.User.Firstname, new { @class = "form-control", @id = "FirstName" })
+                            </div>
+                            <div class="form-group">
+                                <label>Tên</label>
+                                @Html.TextBoxFor(m => m.User.Lastname, new { @class = "form-control", @id = "LastName" })
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Email</label>
+                                @Html.TextBoxFor(m => m.User.Email, new { @class = "form-control", @id = "Email" })
+                            </div>
+                            <div class="form-group">
+                                <label>Đơn vị</label>
+                                <select class="form-control select2" id="optionFactory" name="User.FactoryId">
+                                    @if (Model.User.FactoryId > 0)
+                                    {
+                                        <option value="@Model.User.FactoryId" selected="selected">@Model.User.FactoryName</option>
+                                    }
+                                </select>
+                                @Html.HiddenFor(m => m.User.FactoryName, new { @class = "form-control", @id = "FactoryName" })
+                            </div>                
+                            <div class="form-group">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.User.Inactive, new { @class = "minimal" }) Kích hoạt
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-12">                            
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <div class="input-group">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-plus"></i> Thêm mới
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+</div>
+<script>
+    @*$("#optionFactory").select2({
+        minimumInputLength: 0,
+        allowClear: true,
+        multiple: false,
+        ajax: {
+            url: '@Url.Action("GetFactory","Device")',
+            dataType: 'json',
+            type: "POST",
+            data: function (params) {
+                return {
+                    Pattern: params.term,
+                    Offset: (params.page || 0) * 10,
+                    Limit: 10
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 0;
+                console.log(data);
+                return {
+                    results: data,
+                    pagination: {
+                        more: data.length >= 10 * params.page
+                    }
+                };
+            }
+        },
+        placeholder: 'Chọn đơn vị',
+        escapeMarkup: function (markup) { return markup; },
+        templateResult: function (results) {
+            if (results) {
+                var rs = JSON.stringify(results);
+                var json = JSON.parse(rs);
+                return "<div title='" + json["text"] + "' id='" + json["id"] + "'>" + json["text"] + "</div>";
+            }
+            return "<div title='' id=''></div>";
+        },
+        templateSelection: function (results) {
+            return "<div style='float:left;' id='" + results.id + "'>" + results.text + "</div>";
+        }
+    });*@
+
+    $.ajax({
+        type: "POST",
+        url: "@Url.Action("GetFactory", "Device")",
+        dataType: "json",
+        data: {
+            Pattern: '',
+            Offset: 0,
+            Limit: 10000000
+        },
+        success: function(response) {
+            $("#optionFactory").select2({
+                closeOnSelect: true,
+                data: response,
+                placeholder: 'Chọn đơn vị'
+            });
+        }
+    });
+
+    $("#optionFactory").on('select2:select',
+        function(e) {
+            var data = e.params.data;
+            $('#FactoryName').val(data.text);
+        });
+
+    $("#optionFactory").on('select2:unselect',
+        function(e) {
+            $('#FactoryName').val('');
+        });
+</script>

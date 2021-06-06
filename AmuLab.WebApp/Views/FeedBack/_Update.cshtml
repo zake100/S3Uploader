@@ -1,0 +1,30 @@
+﻿@model AntData.TKV.Business.Models.FeedBackModel
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Xem phản hồi thông tin</h3>
+    </div>
+    <div class="box-body">
+        @using (Html.BeginForm("Index", "FeedBack", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-body">
+                <div class="form-group">
+                    <label>Tiêu đề </label>
+                    <div class="input-group" style="width:100%;">
+                        @Html.TextBoxFor(f => f.FeedBack.Title, new { @class = "form-control" })
+                        @Html.TextBoxFor(f => f.FeedBack.Id, new { @class = "form-control", @type = "hidden" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Nội dung </label>
+                    <div class="input-group" style="width:100%;">
+                        @Html.TextAreaFor(f => f.FeedBack.Content, new { @class = "form-control", @rows = "8" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <a href="/feedback" class="btn btn-default"><i class="fa fa-backward"></i> Quay lại</a>
+            </div>
+        }
+    </div>
+</div>

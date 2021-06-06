@@ -1,0 +1,29 @@
+﻿
+@model AntData.TKV.Business.Models.UnitModel
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Cập nhật đơn vị tính</h3>
+    </div>
+    <div class="box-body">
+        @using (Html.BeginForm("Index", "Unit", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-body">
+                <div class="form-group">
+                    <label>Tên đơn vị tính <span style="color:red;">(*)</span></label>
+                    <div class="input-group" style="width:40%;">
+                        @Html.TextBoxFor(m => m.Unit.Name, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.Unit.Id, new { @class = "form-control", @type = "hidden" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <div class="form-group text-danger">
+                    @Html.ValidationMessage("error")
+                </div>
+                <button type="submit" class="btn btn-info"><i class="fa fa-edit"></i> Cập nhật</button>
+                <a href="/unit" class="btn btn-default"><i class="fa fa-backward"></i> Quay lại</a>
+            </div>
+        }
+    </div>
+</div>

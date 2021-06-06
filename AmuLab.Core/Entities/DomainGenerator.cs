@@ -20,7 +20,6 @@
 
 using System;
 using System.Collections.Generic;
-using AmuLab.Core.Entities;
 
 namespace AmuLab.Core.Entities
 {

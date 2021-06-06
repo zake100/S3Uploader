@@ -1,0 +1,56 @@
+﻿
+.overlay-loading {
+    background: #000;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 2000;
+    opacity: 0.1;
+}
+
+.wrapper-loading {
+    font-size: 16px; /* 1em */
+    width: 5em;
+    height: 5em;
+    position: absolute;
+    z-index: 3000;
+    left: 0px;
+    right: 0px;
+    top: 35%;
+    bottom: 0px;
+    margin: 0px auto;
+}
+
+.wrapper-loading .inner {
+    background: #fff;
+    font-size: 12px;
+    text-align: center;
+    padding: 10px 0px;
+    border-radius: 6px !important;
+}
+
+.wrapper-loading .inner p {
+    margin-bottom: 0px;
+}
+
+.bootstrap-timepicker {
+    display: inline-block
+}
+.bootstrap-timepicker .add-on {
+    position: absolute;
+    top:10px;
+    left: 50%;
+    margin-left: 60px;
+}
+
+.text-align-justify{
+    text-align:justify;
+}
+#vin-grid {
+    overflow:auto;
+}
+.v-align-middle {
+    vertical-align: middle !important;
+}

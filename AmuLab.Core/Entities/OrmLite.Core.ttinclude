@@ -251,7 +251,7 @@ public class SPParam
 }
 
 static string TableName2ClassName(string tableName) {
-	string prevChar = "";
+		string prevChar = "";
 	string result = "";
 	//foreach(var chr in tableName) {
 		//var currentChar = chr.ToString();

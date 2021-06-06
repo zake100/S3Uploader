@@ -1,0 +1,102 @@
+﻿.background-login {
+    background: url(/Content/img/back.jpg) no-repeat
+}
+
+.login-box-body {
+    background: #9c8b8c;
+    font-size: 16px;
+    color: #940709;
+}
+.select2 {
+     width: 100% !important
+ }
+
+.select2-container .select2-selection--single {
+    height: 37px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 35px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 35px;
+}
+
+.select2-container--default .select2-selection--multiple,
+.select2-container--default .select2-search--dropdown .select2-search__field,
+.select2-container--default .select2-selection--single,
+.select2-dropdown {
+    border: 1px solid #e6e9ee
+}
+.cursor-pointer {
+    cursor: pointer !important;
+}
+.yellow_background {
+    background-color: yellow;
+}
+.red_background {
+    background-color: red;
+    color: white;
+}
+.blue_background {
+    background-color: blue;
+    color: white;
+}
+.green_background {
+    background-color: green;
+    color: white;
+}
+.orange_background {
+    background-color: orange;
+    color: white;
+}
+.bordor_background {
+    background-color: #940709;
+    color: white;
+}
+.black_background {
+    background-color: black;
+    color: white;
+}
+.white_background {
+    background-color: white;
+    color: black;
+}
+.aqua_background {
+    background-color: aqua;
+    color: black;
+}
+.dropbox {
+    border-radius: 3px;
+    position: relative;
+    min-height: 110px;
+    overflow: hidden;
+    padding: 0 50px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3) inset, 0 -3px 2px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.dropbox .message {
+    font-size: 11px;
+    text-align: center;
+    padding-top: 30px;
+    display: block;
+}
+
+.dropbox .message i {
+    color: #ccc;
+    font-size: 10px;
+}
+
+#image, #image2 {
+    margin-top: 15px;
+    text-align: center;
+}
+#map {
+    height: 200px;
+    width: 100%;
+}
+.color-red {
+    color: red;
+}

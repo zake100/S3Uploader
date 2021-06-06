@@ -1,0 +1,96 @@
+﻿@using AntData.TKV.Controllers
+@model AntData.TKV.Business.Models.FeedBackModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var baseController = ViewContext.Controller as BaseController;
+}
+@section scriptsHeader{
+    <script src="/Content/js/bootbox.js"></script>
+}
+
+<section class="content-header">
+    <h1>
+        Phản hồi thông tin
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Dashboard</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+
+        @if (Model.FeedBack.Id > 0)
+        {
+            if (baseController.HasRole((int)AntData.TKV.Helper.ActionEnum.Update))
+            {
+                <div class="col-md-5">
+                    @Html.Partial("_Update", Model)
+                </div>
+            }
+        }
+        else
+        {
+            if (baseController.HasRole((int)AntData.TKV.Helper.ActionEnum.Add))
+            {
+                <div class="col-md-5">
+                    @Html.Partial("_Create", Model)
+                </div>
+            }
+        }
+
+        <div class="col-md-7">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Danh sách thông tin phản hồi</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="example2" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Tiêu đề</th>
+                                <th>Công cụ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.FeedBacks != null && Model.FeedBacks.Count > 0)
+                            {
+                                foreach (var item in Model.FeedBacks)
+                                {
+                                    <tr>
+                                        <td>@item.Id</td>
+                                        <td>@item.Title</td>
+                                        <td>
+                                            @if (baseController.HasRole((int)AntData.TKV.Helper.ActionEnum.Update))
+                                            {
+                                                <a href="/feedback?id=@item.Id" title="Xem chi tiết">
+                                                    <i class="fa fa-fw fa-eye"></i>
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    @Html.Partial("_FeedBackPaging", Model)
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#feedback-index").addClass("active");
+            $("#category").addClass("active menu-open");
+        });
+    </script>
+}
+

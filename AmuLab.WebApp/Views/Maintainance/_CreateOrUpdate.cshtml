@@ -1,0 +1,277 @@
+﻿<div class="modal fade" id="modal-maintainance">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">
+                    Đặt lịch bảo dưỡng cho thiết bị
+                </h4>
+            </div>
+            @using (Html.BeginForm("CreateOrUpdate", "Maintainance", FormMethod.Post, new { id = "createOrUpdateMaintainance"}))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Thiết bị <span style="color:red;">(*)</span></label>
+                                <div class="input-icon">
+                                    <select class="form-control select2" style="width: 100%;" id="deviceForMaintainance" name="DeviceId"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Đơn vị <span style="color:red;">(*)</span></label>
+                                <div class="input-icon">
+                                    <select class="form-control select2" style="width: 100%;" id="factoryForMaintainance" name="FactoryId"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Ngày bảo dưỡng <span style="color:red;">(*)</span></label>
+                                <div class="input-group input-icon" id="dateMaintainance">
+                                    <input type="text" class="form-control pull-right" id="dateValidate" autocomplete="off"/>
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                </div>
+                                <input type="hidden" class="form-control pull-right" name="Date" id="dateForMaintainance" />
+                                <input type="hidden" class="form-control pull-right" name="Id" id="idForMaintainance" />
+                            </div>
+                            <div class="form-group">
+                                <label>Số lượng <span style="color:red;">(*)</span></label>
+                                <div>
+                                    <input type="text" class="form-control pull-right input-icon" id="quantityMaintainance" name="Quantity"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Ghi chú</label>
+                                <div>
+                                    <textarea class="form-control pull-right input-icon" id="noteForMaintainance" name="Note"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <span id="noteMessage" class=""></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary" id="createMaintainance">Thêm lịch</button>
+                    <button type="submit" class="btn btn-primary" id="updateMaintainance">Cập nhật</button>
+                </div>
+            }
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<script src="~/Content/js/moment/moment-with-locales.js"></script>
+<script src="~/Content/js/moment/moment.js"></script>
+<script src="~/Content/js/bootstrap-datetimepicker.js"></script>
+<script src="~/Content/js/bootbox.js"></script>
+<script src="~/Content/js/jquery.validate/jquery.validate.min.js"></script>
+<script>
+    $(document).ready(function() {
+        MaintainanceValidate.init();
+
+        $('#deviceForMaintainance').on('select2:select', function (e) {
+            $('#deviceForMaintainance').valid();
+        });
+        $('#deviceForMaintainance').on('select2:unselect', function (e) {
+            $('#deviceForMaintainance').valid();
+        });
+        $('#factoryForMaintainance').on('select2:select', function (e) {
+            $('#factoryForMaintainance').valid();
+        });
+        $('#factoryForMaintainance').on('select2:unselect', function (e) {
+            $('#factoryForMaintainance').valid();
+        });
+    });
+    $("#deviceForMaintainance").select2({
+        minimumInputLength: 0,
+        allowClear: true,
+        multiple: false,
+        ajax: {
+            url: '@Url.Action("SearchDevicePaging", "Device")',
+            dataType: 'json',
+            type: "POST",
+            data: function (params) {
+                return {
+                    name: params.term,
+                    pageNumber: (params.page || 1),
+                    pageSize: 10
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+                return {
+                    results: data.data,
+                    pagination: {
+                        more: params.page * 10 < data.total_count && data.total_count > 10
+                    }
+                };
+            }
+        },
+        placeholder: 'Chọn thiết bị',
+        dropdownParent: $('#deviceForMaintainance').parent(),
+        escapeMarkup: function (markup) { return markup; },
+        templateResult: function (results) {
+            if (results) {
+                var rs = JSON.stringify(results);
+                var json = JSON.parse(rs);
+                return "<div title='" + json["text"] + "' id='" + json["id"] + "'>" + json["text"] + "</div>";
+            }
+            return "<div title='' id=''></div>";
+        },
+        templateSelection: function (results) {
+            return "<div style='float:left;' id='" + results.id + "'>" + results.text + "</div>";
+        }
+    });
+    $.ajax({
+        type: "POST",
+        url: "@Url.Action("GetFactory", "Device")",
+        dataType: "json",
+    data: {
+        Pattern: '',
+        Offset: 0,
+        Limit: 10000000
+    },
+    success: function(response) {
+        $("#factoryForMaintainance").select2({
+            closeOnSelect: true,
+            data: response,
+            placeholder: 'Chọn đơn vị'
+        });
+    }
+    });
+    @*$("#factoryForMaintainance").select2({
+        minimumInputLength: 0,
+        allowClear: true,
+        multiple: false,
+        ajax: {
+            url: '@Url.Action("GetFactory", "Device")',
+            dataType: 'json',
+            type: "POST",
+            data: function (params) {
+                return {
+                    Pattern: params.term,
+                    Offset: (params.page || 0) * 10,
+                    Limit: 10
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 0;
+                return {
+                    results: data,
+                    pagination: {
+                        more: data.length >= 10 * params.page
+                    }
+                };
+            }
+        },
+        placeholder: 'Chọn đơn vị',
+        dropdownParent: $('#factoryForMaintainance').parent(),
+        escapeMarkup: function (markup) { return markup; },
+        templateResult: function (results) {
+            if (results) {
+                var rs = JSON.stringify(results);
+                var json = JSON.parse(rs);
+                return "<div title='" + json["text"] + "' id='" + json["id"] + "'>" + json["text"] + "</div>";
+            }
+            return "<div title='' id=''></div>";
+        },
+        templateSelection: function (results) {
+            return "<div style='float:left;' id='" + results.id + "'>" + results.text + "</div>";
+        }
+    });*@
+
+    $('#dateMaintainance').datetimepicker({
+        format: 'DD/MM/YYYY'
+    });
+    $('#dateMaintainance').on('dp.change',
+        function (date, oldDate) {
+            if (date.date) {
+                $('#dateForMaintainance').val(date.date.format('YYYY-MM-DD'));
+            } else {
+                $('#dateForMaintainance').val('');
+            }
+        });
+
+    var MaintainanceValidate = function () {
+        var handleValidate = function() {
+            $('#createOrUpdateMaintainance').validate({
+                errorElement: 'div', //default input error message container
+                errorClass: 'help-block', // default input error message class
+                focusInvalid: true, // do not focus the last invalid input
+
+                invalidHandler: function () { //display error alert on form submit
+                    $('.alert-danger', $('#createOrUpdateMaintainance')).show();
+                },
+
+                highlight: function (element) { // hightlight error inputs
+                    $(element)
+                        .closest('.form-group').addClass('has-error'); // set error class to the control group
+                },
+
+                success: function (label) {
+                    label.closest('.form-group').removeClass('has-error');
+                    label.remove();
+                },
+
+                errorPlacement: function (error, element) {
+                    if (element.is('input[type=radio]') || element.is('input[type=checkbox]')) {
+                        element.closest('.form-group').append(error);
+                    } else {
+                        error.insertAfter(element.closest('.input-icon'));
+                    }
+                }
+            });
+
+            $("#quantityMaintainance").rules("add",
+                {
+                    required: true,
+                    digits: true,
+                    messages: {
+                        required: 'Số lượng không được để trống',
+                        digits: 'Vui lòng nhập số nguyên'
+                    }
+                });
+
+            $("#dateValidate").rules("add",
+                {
+                    required: true,
+                    messages: {
+                        required: 'Ngày bảo dưỡng không được để trống'
+                    }
+                });
+
+
+            $("#deviceForMaintainance").rules("add",
+                {
+                    required: true,
+                    messages: {
+                        required: 'Thiết bị không được để trống'
+                    }
+                });
+
+            $("#factoryForMaintainance").rules("add",
+                {
+                    required: true,
+                    messages: {
+                        required: 'Đơn vị không được để trống'
+                    }
+                });
+        };
+
+        return {
+            init: function () {
+                handleValidate();
+            }
+        };
+    }();
+</script>
+

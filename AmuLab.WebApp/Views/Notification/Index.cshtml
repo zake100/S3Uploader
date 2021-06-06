@@ -1,0 +1,117 @@
+﻿@using AntData.TKV.Business.Enums
+@model AntData.TKV.Business.Models.NotificationsModel
+@{
+    ViewBag.Title = "Danh sách thông báo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+}
+
+<section class="content-header">
+    <h1>
+        Danh sách thông báo
+    </h1>
+</section>
+<section class="content">
+    @Html.Partial("_NotificationSearch", Model)
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-body">
+                    <table id="tblMaintainanceList" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center" width="30px">TT</th>
+                                <th>Loại thông báo</th>
+                                <th>Tên thiết bị</th>
+                                <th>Đơn vị đăng ký bảo dưỡng/đơn vị chuyển đến</th>
+                                <th>Ngày thông báo</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var indexCat = 0;
+
+                            }
+                            @foreach (var item in Model.Notification)
+                            {
+                                indexCat++;
+
+                                <tr>
+                                    <td class="text-center">
+                                        <strong>@indexCat</strong>
+                                    </td>
+                                    <td>
+                                        @if (item.Type == (int)NotificationsEnum.NotificationType.Maintainance)
+                                        {
+                                            <span class="label label-success">Bảo dưỡng</span>
+                                        }
+                                        else if (item.Type == (int)NotificationsEnum.NotificationType.TransferFactory)
+                                        {
+                                            <span class="label label-info">
+                                                Chuyển đơn vị
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a href="@Url.Action("DeviceDetail","Device", new { id = item.DeviceId})"><strong>@item.DeviceName</strong></a>
+                                    </td>
+                                    <td>
+                                        @item.FactoryName
+                                    </td>
+                                    <td>
+                                        @if (item.Date.HasValue)
+                                        {
+                                            <text>
+                                                @item.Date.Value.ToString("dd/MM/yyyy")
+                                            </text>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.IsRead)
+                                        {
+                                            <span class="label label-success">Đã đọc</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="label label-warning">Chưa đọc</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                    @Html.Partial("_NotificationPaging", Model)
+                </div>
+                <!-- /.box-body -->
+
+            </div>
+            <!-- /.box -->
+        </div>
+    </div>
+</section>
+
+<script>
+    $(function () {
+        $('#reservation').daterangepicker({
+            locale: {
+            },
+            autoUpdateInput: false,
+        }
+            , function (start, end, label) {
+            });
+
+        $('#reservation').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+            $("#ToDate").val(picker.endDate.format('YYYY/MM/DD'));
+            $("#FromDate").val(picker.startDate.format('YYYY/MM/DD'));
+        });
+
+        $(document).ready(function () {
+            $("#notification-list").addClass("active");
+            $("#category").addClass("active menu-open");
+        });
+    });
+</script>

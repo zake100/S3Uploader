@@ -1,0 +1,127 @@
+﻿@model List<AntData.TKV.Business.Models.FunctionTreeModel>
+@{
+    Layout = null;
+}
+<link href="/bower_components/jstree/themes/default/style.min.css" type="text/css" rel="stylesheet" />
+<link href="/bower_components/bonsai/jquery.bonsai.css" rel="stylesheet" type="text/css">
+@section scriptsHeader{
+   
+}
+
+<script src="/bower_components/jstree/jstree.min.js"></script>
+<!-- modal -->
+<div class="modal fade" id="modal-roles">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Permission</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            <ol id="functionTree" data-name="functionid">
+                                @foreach (var parent in Model)
+                                {
+                                    <li id="li_@parent.Id" name="parent_@parent.Id" data-value="@parent.Id">
+                                        &nbsp;@parent.Caption
+                                        @if (parent.Children != null && parent.Children.Count > 0)
+                                        {
+                                            <ol>
+                                                @foreach (var child in parent.Children)
+                                                {
+                                                    <li id="li_@child.Id" name="child_@child.Id" data-value="@child.Id">
+                                                        &nbsp;@child.Caption
+                                                    </li>
+                                                }
+                                            </ol>
+                                        }
+                                    </li>
+                                }
+                            </ol>
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        @*<div id="permission">
+                            @if (Model != null && Model.Count > 0)
+                            {
+                                <ul>
+                                    @foreach (var parent in Model)
+                                    {
+                                        <li name="parent_@parent.Id">
+                                            @parent.Caption
+                                        </li>
+                                        if (parent.Children != null && parent.Children.Count > 0)
+                                        {
+                                            <ul>
+                                                @foreach (var child in parent.Children)
+                                                {
+                                                    <li name="child_@child.Id">
+                                                        @child.Caption
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+                                    }
+                                </ul>
+                            }
+                        </div>*@
+                        
+                        @*<ol id="auto-checkboxes" data-name="foo">
+                            <li class="expanded" data-value="0">
+                                All
+                                <ol>
+                                    <li data-value="1">Coffee</li>
+                                    <li data-value="2" data-id="2">
+                                        Tea
+                                        <ol>
+                                            <li data-name="blacktea" data-value="3">Black tea</li>
+                                            <li data-value="4">Green tea</li>
+                                        </ol>
+                                    </li>
+                                    <li data-value="5">Milk</li>
+                                </ol>
+                            </li>
+                        </ol>*@
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <span id="treeMessage" class=""></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="roleFunctionAdd();">Cập nhật quyền</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<script src="/bower_components/bonsai/jquery.qubit.js"></script>
+<script src="/bower_components/bonsai/jquery.json-list.js"></script>
+<script src="/bower_components/bonsai/jquery.bonsai.js"></script>
+<script>
+        $(document).ready(function () {
+            //$("#permission").jstree({
+            //    "plugins": ["checkbox"]
+            //});
+
+            $('#functionTree').bonsai({
+                expandAll: true,
+                checkboxes: true, // depends on jquery.qubit plugin
+                createInputs: 'checkbox', // takes values from data-name and data-value, and data-name is inherited
+                createCheckboxes: true // takes values from data-name and data-value, and data-name is inherited
+            });
+        });
+
+</script>    
+
+@*https://www.jqueryscript.net/other/Tree-Generator-jQuery-Bonsai.html*@

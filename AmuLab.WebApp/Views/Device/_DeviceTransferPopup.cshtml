@@ -1,0 +1,232 @@
+﻿<div class="modal fade" id="modal-devicetransfer">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">
+                    Điều động thiết bị
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="box-body">
+                        <div class="form-group">
+                            Tên thiết bị: <label id="deviceTranferName"></label>
+                        </div>
+                        <div class="form-group">
+                            Đơn vị quản lý hiện tại: <label id="currentFactoryName"></label>
+                            <input type="hidden" id="currentFactoryId" />
+                            <input type="hidden" id="deviceId" />
+
+                        </div>
+                        <div class="form-group">
+                            <label>Đơn vị chuyển đến <span style="color:red;">(*)</span></label>
+                            <select class="form-control select2" id="optionFactoryTransfer" style="width: 100%;"></select>
+                            <input type="hidden" id="targetFactoryId" />
+                            <input type="hidden" id="targetFactoryName" />
+                            <input type="hidden" id="currentQuantity" />
+                        </div>
+                        <div class="form-group">
+                            <label>Ngày chuyển <span style="color:red;">(*)</span></label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" id="transferDate">
+                                <input type="hidden" class="form-control pull-right " id="transferDateTime">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Số lượng</label>
+                            <input id="quantityTransfer" type="text" class="form-control" placeholder="0" />
+                        </div>
+                        <div class="form-group">
+                            <label>Tình trạng thiết bị <span style="color:red;">(*)</span></label>
+                            <select class="form-control select2" id="optionDeviceStatusTransfer" style="width: 100%;"></select>
+                            <input type="hidden" id="popupDeviceStatusTranfer" />
+                            <input type="hidden" id="popupDeviceStatusNameTranfer" />
+                        </div>
+                        <div class="form-group">
+                            <label>Ghi chú</label>
+                            <textarea id="deviceTranferNote" class="form-control" rows="4" placeholder="Ghi chú"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <span id="transferMessage" class=""></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Đóng</button>
+                @*<a class="btn btn-info pull-left hide" id="aTransferList">Thông tin điều chuyển</a>*@
+                <button type="button" class="btn btn-primary" id="popupDeviceTransferAdd">Điều chuyển</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
+<script>
+    $.ajax({
+        type: "GET",
+        url: "/device/devicestatus",
+        dataType: "json",
+        success: function (response) {
+            $("#optionDeviceStatusTransfer").select2({
+                closeOnSelect: true,
+                data: response.Data,
+                placeholder: 'Chọn tình trạng thiết bị',
+            })
+             .on("change", function (e) {
+                 var deviceStatusData = $("#optionDeviceStatusTransfer").select2('data');
+                 $("#popupDeviceStatusTranfer").val(deviceStatusData[0].id);
+                 $("#popupDeviceStatusNameTranfer").val(deviceStatusData[0].text);
+             });
+        }
+    });
+
+    $.ajax({
+        type: "POST",
+        url: "@Url.Action("GetFactory2", "Device")",
+        dataType: "json",
+        data: {
+            Pattern: '',
+            Offset: 0,
+            Limit: 10000000
+        },
+        success: function(response) {
+            $("#optionFactoryTransfer").select2({
+                closeOnSelect: true,
+                data: response,
+                placeholder: 'Chọn đơn vị'
+            });
+        }
+    });
+
+    @*$("#optionFactoryTransfer").select2({
+        minimumInputLength: 0,
+        allowClear: true,
+        multiple: false,
+        ajax: {
+            url: '@Url.Action("GetFactory2", "Device")',
+            dataType: 'json',
+            type: "POST",
+            data: function (params) {
+                return {
+                    Pattern: params.term,
+                    Offset: (params.page || 0) * 10,
+                    Limit: 10
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 0;
+                console.log(data);
+                return {
+                    results: data,
+                    pagination: {
+                        more: data.length >= 10 * params.page
+                    }
+                };
+            }
+        },
+        placeholder: 'Chọn đơn vị',
+        escapeMarkup: function (markup) { return markup; },
+        templateResult: function (results) {
+            if (results) {
+                var rs = JSON.stringify(results);
+                var json = JSON.parse(rs);
+                return "<div title='" + json["text"] + "' id='" + json["id"] + "'>" + json["text"] + "</div>";
+            }
+            return "<div title='' id=''></div>";
+        },
+        templateSelection: function (results) {
+            return "<div style='float:left;' id='" + results.id + "'>" + results.text + "</div>";
+        }
+    });*@
+
+    $("#optionFactoryTransfer").on('select2:select',
+        function (e) {
+            var data = e.params.data;
+            $('#targetFactoryName').val(data.text);
+            $("#targetFactoryId").val(data.id);
+        });
+
+    $("#optionFactoryTransfer").on('select2:unselect',
+        function (e) {
+            $('#targetFactoryName').val('');
+            $("#targetFactoryId").val('');
+        });
+
+    $(document).ready(function () {
+        $('#transferDate').datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy',
+            todayHighlight: true
+        }).on('changeDate', function (ev) {
+            if (ev && ev.date) {
+                var dateValue = ev.date;
+                var dd = dateValue.getDate();
+                var mm = dateValue.getMonth() + 1; //January is 0!
+
+                var yyyy = dateValue.getFullYear();
+
+                if (dd < 10) {
+                    dd = '0' + dd;
+                }
+                if (mm < 10) {
+                    mm = '0' + mm;
+                }
+                var expectedDate = dd + '/' + mm + '/' + yyyy;
+                $("#transferDateTime").val(expectedDate);
+            }
+            else {
+                $("#transferDateTime").val('');
+            }
+        });
+        $("#popupDeviceTransferAdd").on('click', function () {
+
+            var r = confirm("Bạn có chắc chắn muốn điều chuyển thiết bị đến đơn vị: " + $("#targetFactoryName").val());
+            if (r == true) {
+                if (parseInt($("#currentQuantity").val()) < parseInt($("#quantityTransfer").val())) {
+                    $("#transferMessage").text("Số lượng điều chuyển không được lớn hơn số lượng hiện tại.").addClass("text-danger");
+                    return;
+                }
+
+                $.ajax({
+                    method: "POST",
+                    url: "/device/devicetransferadd",
+                    data: {
+                        DeviceId: $("#deviceId").val(),
+                        CurrentFactory: $("#currentFactoryId").val(),
+                        TargetFactory: $("#optionFactoryTransfer").val(),
+                        TransferDateTime: $("#transferDateTime").val(),
+                        Status: $("#popupDeviceStatusTranfer").val(),
+                        Quantity: $("#quantityTransfer").val(),
+                        Description: $("#deviceTranferNote").val(),
+                        CurrentFactoryName: $("#currentFactoryName").text(),
+                        TargetFactoryName: $("#targetFactoryName").val(),
+                        CurrentQuantity: $("#currentQuantity").val()
+                    }
+                })
+                .done(function (msg) {
+
+                    if (msg.Id > 1) {
+                        $("#transferMessage").text(msg.Message).removeClass("text-danger").addClass("text-info");
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1000);
+                    }
+                    else {
+                        $("#transferMessage").text(msg.Message).addClass("text-danger");
+                    }
+                });
+            }
+        });
+    });
+</script>

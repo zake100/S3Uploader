@@ -1,0 +1,128 @@
+﻿@model AntData.TKV.Business.Models.FunctionsModel
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    .select2-container--default .select2-selection--single {
+        height: 35px;
+        border-radius: 0px;
+    }
+</style>
+<section class="content-header">
+    <h1>
+        Quản lý function
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Dashboard</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-6">
+            @if (Model.Function.Id > 0)
+            {
+                @Html.Partial("_Update", Model);
+            }
+            else
+            {
+                @Html.Partial("_Create", Model);
+            }
+
+        </div>
+
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Danh sách</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="example2" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th width="10px">TT</th>                                
+                                <th>Caption</th>
+                                <th>Key</th>
+                                <th>Url</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.FunctionList != null && Model.FunctionList.Count > 0)
+                            {                            
+                                foreach (var item in Model.FunctionList)
+                                {
+                                    <tr>
+                                        <td>@item.Order</td>                                        
+                                        <td><i class="@item.Icon"></i> @item.Caption</td>
+                                        <td>@item.Key</td>
+                                        <td>@item.Url</td>
+                                        <td>
+                                            <a href="/functions?id=@item.Id" title="Cập nhật">
+                                                <i class="fa fa-fw fa-pencil"></i>
+                                            </a>
+                                            <a href="#" title="Xóa" onclick="del(@item.Id);">
+                                                <i class="fa fa-fw fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    foreach (var child in item.Children)
+                                    {
+                                        <tr>    
+                                            <td></td>                                        
+                                            <td style="padding-left:10px">
+                                                <i class="fa fa-long-arrow-right"></i> @child.Caption
+                                            </td>
+                                            <td>@child.Key</td>
+                                            <td>@child.Url</td>
+                                            <td>
+                                                <a href="/functions?id=@child.Id" title="Cập nhật">
+                                                    <i class="fa fa-fw fa-edit"></i>
+                                                </a>
+                                                <a href="#" title="Xóa" onclick="del(@child.Id);">
+                                                    <i class="fa fa-fw fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>                      
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+            $("#functions").addClass("active");
+            $("#category").addClass("active menu-open");
+
+
+            $.ajax({
+                type: "GET",
+                url: "/functions/getall",
+                dataType: "json",
+                success: function (response) {
+                    $("#optionFunction").select2({
+                        closeOnSelect: true,
+                        data: response.Data,
+                        placeholder: 'Chọn ',
+                    })
+                     .on("change", function (e) {
+                         $("#FunctionId").val($("#optionFunction").val());
+                     });
+                }
+            })
+        });
+
+
+       
+    </script>
+}
