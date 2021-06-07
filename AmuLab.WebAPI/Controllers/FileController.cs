@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -82,6 +83,16 @@ namespace AmuLab.WebAPI.Controllers
             var myUploader = new AmazonHelper();
             var result = myUploader.ListingObjects();
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("getUser")]
+        public IHttpActionResult GetUser()
+        {
+            return Ok(new List<string>
+            {
+                "abc", "def", "123", "456"
+            });
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿@using System.Configuration
-@{
+﻿@{
     ViewBag.Title = "Upload To S3";
     var apiUrl = AmuLab.Core.Constants.Configuration.ApiUrl;
 }
@@ -61,13 +60,9 @@
             .create(document.querySelector('#suggest'),
                 {
                     mention: {
-                        feeds: [
-                            {
-                                marker: '@("@")',
-                                feed: ['abc', 'def', 'ghi', 'jkl'],
-                                minimumCharacters: 0
-                            }
-                        ]
+                        feeds: function (searchString) {
+                            return getMatchingPlaceholders(searchString);
+                        }
                     }
                 })
             .then(newEditor => {
@@ -77,5 +72,25 @@
             .catch(error => {
                 console.error(error);
             });
+
+        function getMatchingPlaceholders(searchString) {
+            console.log(searchString)
+            return new Promise(resolve => {
+                $.ajax({
+                    url: '@($"{apiUrl}/api/file/getUser")',
+                    type: "GET",
+                    contentType: false, // Not to set any content header
+                    processData: false, // Not to process data
+                    data: {},
+                    success: function(result) {
+                        resolve(result);
+                    },
+                    error: function(err) {
+                        console.log(err)
+                        alert(err.statusText);
+                    }
+                });
+            });
+        }
     </script>
 }
