@@ -89,9 +89,11 @@ namespace AmuLab.WebAPI.Controllers
         [Route("getUser")]
         public IHttpActionResult GetUser()
         {
-            return Ok(new List<string>
+            return Ok(new List<object>
             {
-                "abc", "def", "123", "456"
+                new { id = "abc", name = "abc"},
+                new { id = "123", name = "123"},
+                new { id = "456", name = "456"},
             });
         }
     }
