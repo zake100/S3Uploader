@@ -23,7 +23,7 @@ namespace AmuLab.FileAPI.Controllers
                 var name = postedFile.FileName;
                 var s3DirectoryName = "";
                 var myUploader = new AmazonHelper();
-                var a = myUploader.SendMyFileToS3(postedFile.InputStream, s3DirectoryName, name);
+                var a = myUploader.UploadToS3(postedFile.InputStream, s3DirectoryName, name);
                 result = result && a;
             }
             return Ok(result);

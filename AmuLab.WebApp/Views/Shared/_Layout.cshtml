@@ -52,10 +52,10 @@
     @RenderSection("scriptsHeader", required: false)
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
-    @if (HttpContext.Current.User == null || !HttpContext.Current.User.Identity.IsAuthenticated)
+    @*@if (HttpContext.Current.User == null || !HttpContext.Current.User.Identity.IsAuthenticated)
     {
         Response.Redirect("~/Login/Index?returnUrl=" + Server.UrlEncode(HttpContext.Current.Request.Url.PathAndQuery));
-    }
+    }*@
     <div class="wrapper">
         <header class="main-header">
             <!-- Logo -->
@@ -68,102 +68,24 @@
                     </b>
                 </span>
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg">
+                @*<span class="logo-lg">
                     <b>
                         <img src="~/Content/img/Portal.png" style="height: 34px; margin-left: -5px;" />
                     </b>
-                </span>
+                </span>*@
             </a>
-            <!-- Header Navbar: style can be found in header.less -->
-            <nav class="navbar navbar-static-top">
-                <!-- Sidebar toggle button-->
-                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-                    <span class="sr-only">Toggle navigation</span>
-                </a>
-                <div>
-                </div>
-                <div class="navbar-custom-menu">
-                    <ul class="nav navbar-nav">
-                        <!-- User Account: style can be found in dropdown.less -->
-                        @{ Html.RenderAction("GetNotifications", "Notification");}
-                        <li class="dropdown user user-menu">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="/content/img/usericon.png" class="user-image" alt="User Image">
-                                <span class="hidden-xs">@HttpContext.Current.User.Identity.Name</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <!-- User image -->
-                                <li class="user-header">
-                                    <img src="/content/img/usericon.png" class="img-circle" alt="User Image">
-                                    <p>
-                                        <strong>@HttpContext.Current.User.Identity.Name</strong>
-                                        <small>Công Ty Than Thống Nhất - TKV</small>
-                                    </p>
-                                </li>
-
-                                <!-- Menu Footer-->
-                                <li class="user-footer">
-                                    <div class="pull-left">
-                                        <a href="/users/info" class="btn btn-default btn-flat">Thông tin cá nhân</a>
-                                    </div>
-                                    <div class="pull-right">
-                                        @using (Html.BeginForm("Logout", "Login", FormMethod.Post))
-                                        {
-                                            try
-                                            {
-                                                @Html.AntiForgeryToken()
-                                            }
-                                            catch (Exception)
-                                            {
-                                                Response.Redirect("/login");
-                                            }
-                                            <button type="submit" class="btn btn-default btn-flat">Đăng Xuất</button>
-                                        }
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
-
-                    </ul>
-                </div>
-            </nav>
         </header>
-        <!-- Left side column. contains the logo and sidebar -->
-        <aside class="main-sidebar">
-            <!-- sidebar: style can be found in sidebar.less -->
-            <section class="sidebar">
-                <!-- Sidebar user panel -->
-                <div class="user-panel">
-                    <div class="pull-left image">
-                        <img src="/content/img/usericon.png" class="img-circle" alt="User Image">
-                    </div>
-                    <div class="pull-left info">
-                        <p>@HttpContext.Current.User.Identity.Name</p>
-                        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-                    </div>
-                </div>
-                <!-- sidebar menu: : style can be found in sidebar.less -->
-                <ul class="sidebar-menu" data-widget="tree">
-                    <li class="header">MAIN NAVIGATION</li>
 
-                    @{ Html.RenderAction("Index", "Menu");}
-
-
-                </ul>
-            </section>
-            <!-- /.sidebar -->
-        </aside>
-
-        <!-- Content Wrapper. Contains page content -->
+    <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             @RenderBody()
         </div>
         <!-- /.content-wrapper -->
         <footer class="main-footer">
-            <div class="pull-right hidden-xs">
+            @*<div class="pull-right hidden-xs">
                 <b>CDTN</b> version 2018
             </div>
-            <strong>Copyright &copy; Công ty Cổ phần TATSUMI <a href="https://www.thanthongnhat.vn/" target="_blank"><img src="~/Content/img/logo_tatsumi.png" style="height: 32px;" /></a></strong>
+            <strong>Copyright &copy; Công ty Cổ phần TATSUMI <a href="https://www.thanthongnhat.vn/" target="_blank"><img src="~/Content/img/logo_tatsumi.png" style="height: 32px;" /></a></strong>*@
         </footer>
 
         <!-- Control Sidebar -->

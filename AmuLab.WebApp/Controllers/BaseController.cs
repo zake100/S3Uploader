@@ -13,6 +13,7 @@ namespace AmuLab.WebApp.Controllers
         {
             _security = new Security();
         }
+
         protected ValidationObject ValidationRequest(object request)
         {
             var validationResult = ValidationHelper.ValidateObject(request);

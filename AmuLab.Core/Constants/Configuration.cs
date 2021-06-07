@@ -26,5 +26,10 @@ namespace AmuLab.Core.Constants
         {
             get { return ConfigurationManager.AppSettings["AwsSecretKey"]; }
         }
+
+        public static string ApiUrl
+        {
+            get { return ConfigurationManager.AppSettings["ApiUrl"]; }
+        }
     }
 }
