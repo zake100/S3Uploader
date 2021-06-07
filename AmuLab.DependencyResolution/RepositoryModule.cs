@@ -1,7 +1,7 @@
 ﻿using AmuLab.Core.Repository;
 using AmuLab.Repository;
 
-namespace TKV.DMS.DependencyResolution
+namespace AmuLab.DependencyResolution
 {
     public class RepositoryModule : Ninject.Modules.NinjectModule
     {

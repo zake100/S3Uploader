@@ -1,7 +1,7 @@
 ﻿@using System.Configuration
 @{
     ViewBag.Title = "Upload To S3";
-    var apiUrl = ConfigurationManager.AppSettings[AmuLab.Core.Constants.Configuration.ApiUrl];
+    var apiUrl = AmuLab.Core.Constants.Configuration.ApiUrl;
 }
 <!-- Content Header (Page header) -->
 <section class="content-header">
@@ -17,38 +17,65 @@
 
 <!-- Main content -->
 <section class="content">
-    <!-- Small boxes (Stat box) -->
-    <!-- /.row -->
-    <text>@apiUrl</text>
-    @using (Ajax.BeginForm("", "", null, new AjaxOptions
-    {
-        HttpMethod = "POST",
-        Url = $"{ConfigurationManager.AppSettings[AmuLab.Core.Constants.Configuration.ApiUrl]}/api/file/upload",
-        OnSuccess = "onSubmitSuccess",
-        OnFailure = "onSubmitFailure",
-        OnBegin = "validateForm"
-    }, new { @class = "form-horizontal" }))
-    {
-        <div class="form-group">
-            <input type="file" name="file" class="form-control" />
-        </div>
-
-        <button class="btn btn-success">Upload</button>
-    }
+    <div class="form-group">
+        <input type="file" name="file" class="form-control" id="file" />
+    </div>
+    <button class="btn btn-success" id="uploadFile" type="button">Upload</button>
+    <hr />
+    <textarea id="suggest"></textarea>
 </section>
+
 @section scripts {
     <script src="~/Content/js/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Content/plugin/ckeditor/ckeditor.js"></script>
     <script type="text/javascript">
-        function validateForm(data) {
-            console.log('validate', data);
-        }
+        let editor;
+        $('#uploadFile').on('click',
+            function() {
+                var fileUpload = $('#file').get(0);
+                var files = fileUpload.files;
+                // Create FormData object
+                var fileData = new FormData();
 
-        function onSubmitSuccess(data) {
-            alert('success');
-        }
+                // Looping over all files and add it to FormData object
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name, files[i]);
+                }
 
-        function onSubmitFailure(data) {
-            alert('failure');
-        }
+                $.ajax({
+                    url: '@($"{apiUrl}/api/file/upload")',
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                    processData: false, // Not to process data
+                    data: fileData,
+                    success: function(result) {
+                        alert("Success");
+                    },
+                    error: function(err) {
+                        console.log(err)
+                        alert(err.statusText);
+                    }
+                });
+            });
+        ClassicEditor
+            .create(document.querySelector('#suggest'),
+                {
+                    mention: {
+                        feeds: [
+                            {
+                                marker: '@("@")',
+                                feed: ['abc', 'def', 'ghi', 'jkl'],
+                                minimumCharacters: 0
+                            }
+                        ]
+                    }
+                })
+            .then(newEditor => {
+                editor = newEditor;
+                console.log(newEditor);
+            })
+            .catch(error => {
+                console.error(error);
+            });
     </script>
 }

@@ -14,7 +14,7 @@ namespace AmuLab.FileAPI.Helpers
         private readonly AmazonS3Client _client;
         public AmazonHelper()
         {
-            _client = new AmazonS3Client(new BasicAWSCredentials(ConfigurationManager.AppSettings[Core.Constants.Configuration.AwsAccessKey], ConfigurationManager.AppSettings[Core.Constants.Configuration.AwsSecretKey]),
+            _client = new AmazonS3Client(new BasicAWSCredentials(Core.Constants.Configuration.AwsAccessKey, Core.Constants.Configuration.AwsSecretKey),
                 RegionEndpoint.USEast1);
         }
 
@@ -25,11 +25,11 @@ namespace AmuLab.FileAPI.Helpers
 
             if (string.IsNullOrEmpty(subDirectoryInBucket))
             {
-                request.BucketName = ConfigurationManager.AppSettings[Core.Constants.Configuration.AwsBucketName]; //no subdirectory just bucket name  
+                request.BucketName = Core.Constants.Configuration.AwsBucketName; //no subdirectory just bucket name  
             }
             else
             {   // subdirectory and bucket name  
-                request.BucketName = ConfigurationManager.AppSettings[Core.Constants.Configuration.AwsBucketName] + @"/" + subDirectoryInBucket;
+                request.BucketName = Core.Constants.Configuration.AwsBucketName + @"/" + subDirectoryInBucket;
             }
             request.Key = fileNameInS3; //file name up in S3  
             request.InputStream = localFilePath;
@@ -44,7 +44,7 @@ namespace AmuLab.FileAPI.Helpers
             {
                 var request = new GetObjectRequest
                 {
-                    BucketName = ConfigurationManager.AppSettings[Core.Constants.Configuration.AwsBucketName],
+                    BucketName = Core.Constants.Configuration.AwsBucketName,
                     Key = keyName
                 };
                 string responseBody;
@@ -84,7 +84,7 @@ namespace AmuLab.FileAPI.Helpers
             {
                 var request = new ListObjectsV2Request
                 {
-                    BucketName = ConfigurationManager.AppSettings[Core.Constants.Configuration.AwsBucketName],
+                    BucketName = Core.Constants.Configuration.AwsBucketName,
                     MaxKeys = Int32.MaxValue
                 };
                 ListObjectsV2Response response;
