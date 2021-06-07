@@ -1,6 +1,6 @@
 ﻿using System.Web.Http;
 
-namespace AmuLab.FileAPI
+namespace AmuLab.WebAPI
 {
     public static class WebApiConfig
     {

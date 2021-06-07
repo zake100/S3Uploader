@@ -6,9 +6,9 @@ using System.Web;
 using System.Web.Http;
 using AmuLab.Core.Entities;
 using AmuLab.Core.Service;
-using AmuLab.FileAPI.Helpers;
+using AmuLab.WebAPI.Helpers;
 
-namespace AmuLab.FileAPI.Controllers
+namespace AmuLab.WebAPI.Controllers
 {
     [RoutePrefix("api/file")]
     public class FileController : BaseController

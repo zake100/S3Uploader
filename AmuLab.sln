@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmuLab.FileAPI", "AmuLab.FileAPI\AmuLab.FileAPI.csproj", "{E611EB1A-4F1D-4387-8441-161C0E679B1B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmuLab.Core", "AmuLab.Core\AmuLab.Core.csproj", "{9A57AC6E-8EEC-488D-8237-0673D767EBCB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmuLab.Repository", "AmuLab.Repository\AmuLab.Repository.csproj", "{71695DD9-0767-426B-B326-78C9541E4985}"
@@ -17,16 +15,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmuLab.DependencyResolution
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmuLab.WebApp", "AmuLab.WebApp\AmuLab.WebApp.csproj", "{B03D176F-6EB4-440D-AD11-954C2CB89049}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmuLab.WebAPI", "AmuLab.WebAPI\AmuLab.WebAPI.csproj", "{E611EB1A-4F1D-4387-8441-161C0E679B1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E611EB1A-4F1D-4387-8441-161C0E679B1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E611EB1A-4F1D-4387-8441-161C0E679B1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E611EB1A-4F1D-4387-8441-161C0E679B1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E611EB1A-4F1D-4387-8441-161C0E679B1B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9A57AC6E-8EEC-488D-8237-0673D767EBCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9A57AC6E-8EEC-488D-8237-0673D767EBCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A57AC6E-8EEC-488D-8237-0673D767EBCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,6 +47,10 @@ Global
 		{B03D176F-6EB4-440D-AD11-954C2CB89049}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B03D176F-6EB4-440D-AD11-954C2CB89049}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B03D176F-6EB4-440D-AD11-954C2CB89049}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E611EB1A-4F1D-4387-8441-161C0E679B1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E611EB1A-4F1D-4387-8441-161C0E679B1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E611EB1A-4F1D-4387-8441-161C0E679B1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E611EB1A-4F1D-4387-8441-161C0E679B1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

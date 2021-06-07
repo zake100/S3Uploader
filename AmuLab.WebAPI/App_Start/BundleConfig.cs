@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace AmuLab.FileAPI
+namespace AmuLab.WebAPI
 {
     public class BundleConfig
     {

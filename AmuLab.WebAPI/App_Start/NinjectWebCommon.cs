@@ -3,12 +3,12 @@ using Ninject;
 using Ninject.Web.Common;
 using System.Web;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
-using AmuLab.FileAPI;
+using AmuLab.WebAPI;
 using AmuLab.DependencyResolution;
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(NinjectWebCommon), "Stop")]
 
-namespace AmuLab.FileAPI
+namespace AmuLab.WebAPI
 {
     public static class NinjectWebCommon
     {

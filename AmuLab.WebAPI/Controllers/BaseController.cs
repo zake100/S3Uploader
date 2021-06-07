@@ -1,7 +1,7 @@
 ﻿using System.Web.Http;
 using System.Web.Http.Cors;
 
-namespace AmuLab.FileAPI.Controllers
+namespace AmuLab.WebAPI.Controllers
 {
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class BaseController : ApiController

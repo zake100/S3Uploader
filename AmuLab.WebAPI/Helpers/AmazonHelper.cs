@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
 using Amazon;
 using Amazon.Runtime;
@@ -7,7 +6,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 
-namespace AmuLab.FileAPI.Helpers
+namespace AmuLab.WebAPI.Helpers
 {
     public class AmazonHelper
     {

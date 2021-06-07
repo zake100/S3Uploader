@@ -4,7 +4,7 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using Newtonsoft.Json.Serialization;
 
-namespace AmuLab.FileAPI
+namespace AmuLab.WebAPI
 {
     public class WebApiApplication : System.Web.HttpApplication
     {
