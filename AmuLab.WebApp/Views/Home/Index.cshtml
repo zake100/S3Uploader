@@ -87,7 +87,7 @@
 
         function getData() {
             $.ajax({
-                url: '@($"{apiUrl}/api/file/search")',
+                url: '@($"{apiUrl}/api/file/getAll")',
                 type: "GET",
                 success: function(result) {
                     var str = '';

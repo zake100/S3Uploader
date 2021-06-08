@@ -91,8 +91,8 @@ namespace AmuLab.WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("search")]
-        public IHttpActionResult Search()
+        [Route("getAll")]
+        public IHttpActionResult GetAll()
         {
             var result = _tmediaService.GetAll();
             return Ok(result);
