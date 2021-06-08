@@ -2,6 +2,7 @@
 using AmuLab.Core.Service;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace AmuLab.WebAPI.Controllers
 {
@@ -15,8 +16,8 @@ namespace AmuLab.WebAPI.Controllers
             _entitySearchService = entitySearchService;
         }
 
-        [Route("searchProfile")]
         [HttpGet]
+        [Route("searchProfile")]
         public IHttpActionResult SearchProfile(string userName)
         {
             var searchResuls = _entitySearchService.Search(new EntitySearchModel { UserName = userName });
