@@ -15,10 +15,12 @@ namespace AmuLab.WebAPI.Controllers
     public class FileController : BaseController
     {
         private readonly ITmediaService _tmediaService;
+        private readonly IEntitySearchService _entitySearchService;
 
-        public FileController(ITmediaService tmediaService)
+        public FileController(ITmediaService tmediaService, IEntitySearchService entitySearchService)
         {
             _tmediaService = tmediaService;
+            _entitySearchService = entitySearchService;
         }
 
         [HttpPost]

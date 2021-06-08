@@ -57,9 +57,15 @@
         CKEDITOR.plugins.addExternal('textmatch', '/Content/plugin/ckeditor/plugins/textmatch/', 'plugin.js');
         CKEDITOR.plugins.addExternal('textwatcher', '/Content/plugin/ckeditor/plugins/textwatcher/', 'plugin.js');
 
+        //config.outputTemplate = '<a href="https://github.com/ckeditor/ckeditor4/issues/{id}">{name} (#{id})</a> ';
+
         CKEDITOR.replace('suggest', {
-            extraPlugins: ['mentions', 'autocomplete', 'textmatch', 'textwatcher'],
-            mentions: [{ feed: '@($"{apiUrl}/api/account/searchProfile")', minChars: 0, marker: '@("@")' }]
+            extraPlugins: ['mentions', 'autocomplete', 'textmatch', 'textwatcher']//,
+            //mentions:
         });
+
+        CKEDITOR.config.outputTemplate = '<a href="https://github.com/ckeditor/ckeditor4/issues/{id}">{name} (#{id})</a> ';
+        CKEDITOR.config.mentions = [{ feed: '@($"{apiUrl}/api/account/searchProfile")', minChars: 0, marker: '@("@")' }];
+
     </script>
 }

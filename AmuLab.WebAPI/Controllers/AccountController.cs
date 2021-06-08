@@ -6,10 +6,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace AmuLab.WebAPI.Controllers
 {
-    [Route("api/account")]
+    [RoutePrefix("api/account")]
     public class AccountController : BaseController
     {
         private readonly IEntitySearchService _entitySearchService;
@@ -19,8 +20,8 @@ namespace AmuLab.WebAPI.Controllers
             _entitySearchService = entitySearchService;
         }
 
-        [Route("searchProfile")]
         [HttpGet]
+        [Route("searchProfile")]
         public IHttpActionResult SearchProfile(string userName)
         {
             var searchResuls = _entitySearchService.Search(new EntitySearchModel { UserName = userName });
