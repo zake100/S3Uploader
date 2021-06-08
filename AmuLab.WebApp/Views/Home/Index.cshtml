@@ -39,8 +39,6 @@
         <tbody id="listData">
         </tbody>
     </table>
-    <hr />
-    <textarea id="suggest" name="suggest"></textarea>
 </section>
 <div class="modal fade" id="modal-view-media">
     <div class="modal-dialog modal-lg">
@@ -155,7 +153,7 @@
 
         CKEDITOR.replace('suggest', {
             extraPlugins: ['mentions', 'autocomplete', 'textmatch', 'textwatcher'],
-            mentions: [{ feed: '@($"{apiUrl}/api/account/searchProfile")', minChars: 0, marker: '@("@")' }]
+            mentions: [{ feed: '@($"{apiUrl}/api/file/searchProfile")?userName={encodedQuery}', minChars: 0, marker: '@("@")' }]
         });
     </script>
 }
