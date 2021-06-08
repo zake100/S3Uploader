@@ -64,6 +64,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MapperGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Mapper\TGNRTR_MEDIAMapper.cs">
+      <DependentUpon>MapperGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Mapper\TMEDIAMapper.cs">
       <DependentUpon>MapperGenerator.tt</DependentUpon>
     </Compile>

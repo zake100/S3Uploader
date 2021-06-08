@@ -67,5 +67,10 @@ namespace AmuLab.Services
 
             return _repository.Delete(currentMedia);
         }
+
+        public TMEDIAEntity GetById(long id)
+        {
+            return _repository.GetById(id);
+        }
     }
 }

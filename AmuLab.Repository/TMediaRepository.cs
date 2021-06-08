@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using AmuLab.Core.Entities;
 using AmuLab.Core.Repository;
 using AmuLab.Core.Utility;
@@ -46,8 +47,19 @@ namespace AmuLab.Repository
                 dp.Add("@ENTY_IP_ADDR", entity.ENTY_IP_ADDR);
                 dp.Add("@PBLISH_ON_TCD", entity.PBLISH_ON_TCD);
                 dp.Add("@POST_ID", entity.POST_ID);
+                dp.Add("@MEDIA_TITLE", entity.MEDIA_TITLE);
+                dp.Add("@MEDIA_DESC", entity.MEDIA_DESC);
                 sqlConnection.Execute("dbo.Media_createMedia", dp, commandType: CommandType.StoredProcedure);
                 return id;
+            }
+        }
+
+        public new TMEDIAEntity GetById(long id)
+        {
+            using (var sqlConnection = new SqlConnection(ConnectionString))
+            {
+                sqlConnection.Open();
+                return sqlConnection.Query<TMEDIAEntity>($"SELECT * FROM [dbo].[TMEDIA] WHERE [MEDIA_ID] = {id}").FirstOrDefault();
             }
         }
     }

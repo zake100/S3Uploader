@@ -74,6 +74,9 @@
     </Compile>
     <Compile Include="Entities\DynamicParameter.cs" />
     <Compile Include="Entities\EntitySearch.cs" />
+    <Compile Include="Entities\TGNRTR_MEDIAEntity.cs">
+      <DependentUpon>DomainGenerator.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\TMEDIAEntity.cs">
       <DependentUpon>DomainGenerator.tt</DependentUpon>
     </Compile>

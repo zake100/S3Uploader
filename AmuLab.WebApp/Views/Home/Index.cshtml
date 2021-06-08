@@ -70,25 +70,36 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
+                <h4 class="modal-title" id="mediaTitle"></h4>
             </div>
             <div class="modal-body">
-                <div class="row" style="width: 100%; overflow: auto;">
-                    <div class="col-md-12" style="text-align: center;" id="viewMedia"></div>
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="row" style="width: 100%; overflow: auto;">
+                            <div class="col-md-12" style="text-align: center;" id="viewMedia"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><strong>Height</strong></span>
+                                    <input class="form-control" type="number" id="height" value="500" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><strong>Width</strong></span>
+                                    <input class="form-control" type="number" id="width" value="500" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <div class="row">
-                    <div class="col-md-4 form-group">
-                        <label>Height</label>
-                        <input class="form-control" type="number" id="height" value="500" />
-                    </div>
-                    <div class="col-md-4 form-group">
-                        <label>Width</label>
-                        <input class="form-control" type="number" id="width" value="500" />
-                    </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-success" onclick="setMediaDimention()">Change Demission</button>
-                    </div>
+                <div class="col-md-12">
+                    <button class="btn btn-success" onclick="setMediaDimention()">Change Dimention</button>
                 </div>
             </div>
         </div>
@@ -100,9 +111,9 @@
 @section scripts {
     <script src="~/Content/js/jquery.unobtrusive-ajax.js"></script>
     <script src="~/Content/plugin/ckeditor/ckeditor.js"></script>
-    
+
     <script type="text/javascript">
-        let editor, mediaName = '', mediaContentType = '';
+        let editor, selectedItem = {};
         $(document).ready(function() {
             getData();
         });
@@ -120,11 +131,15 @@
                         str += '<td>' + item.mediA_NM + '</td>';
                         str += '<td>' + item.mediA_FIL_TY + '</td>';
                         str += '<td>' + item.mediA_SIZE_NBR + '</td>';
+                        var desc = '';
+                        if (item.mediA_DESC) {
+                            desc = item.mediA_DESC.replace(/</g, "µ").replace(/>/g, "Ħ");
+                        }
                         if (item.mediA_FIL_TY) {
                             if (item.mediA_FIL_TY.includes('image')) {
-                                str += '<td><img style="cursor: pointer;" onclick="viewMedia(\'' + item.mediA_NM + '\', \'' + item.mediA_FIL_TY + '\')" src="https://ik.imagekit.io/dghocdn/' + item.mediA_NM + '?tr=h-50,w-50"/></td>';
+                                str += '<td><img style="cursor: pointer;" onclick="viewMedia(' + item.mediA_ID + ')" src="https://ik.imagekit.io/dghocdn/' + item.mediA_NM + '?tr=h-50,w-50"/></td>';
                             } else if (item.mediA_FIL_TY.includes('video')) {
-                                str += '<td><video height="50" width="50" style="cursor: pointer;" onclick="viewMedia(\'' + item.mediA_NM + '\', \'' + item.mediA_FIL_TY + '\')"><source src="https://ik.imagekit.io/dghocdn/' + item.mediA_NM + '?tr=h-50,w-50"/></video></td>';
+                                str += '<td><video height="50" width="50" style="cursor: pointer;" onclick="viewMedia(' + item.mediA_ID + ')"><source src="https://ik.imagekit.io/dghocdn/' + item.mediA_NM + '?tr=h-50,w-50"/></video></td>';
                             } else {
                                 str += '<td></td>';
                             }
@@ -142,25 +157,38 @@
             });
         }
 
-        function viewMedia(name, contentType) {
-            mediaName = name;
-            mediaContentType = contentType;
-            if (contentType) {
-                if (contentType.includes('image')) {
-                    $('#viewMedia').html('<img src="@imageKitLink' + name + '?tr=h-500,w-500"/>');
-                } else {
-                    $('#viewMedia').html('<video autoplay controls height="500" width="500"><source src="@imageKitLink' + name + '?tr=h-500,w-500"/></video>');
+        function viewMedia(id) {
+            $.ajax({
+                url: '@($"{apiUrl}/api/file/getDetail/")' + id,
+                type: "GET",
+                success: function (result) {
+                    var contentType = result.mediA_FIL_TY;
+                    var name = result.mediA_NM;
+                    selectedItem.name = name;
+                    selectedItem.contentType = contentType;
+                    $('#mediaTitle').text(result.mediA_TITLE);
+                    if (contentType) {
+                        if (contentType.includes('image')) {
+                            $('#viewMedia').html('<img src="@imageKitLink' + name + '?tr=h-500,w-500"/>');
+                        } else {
+                            $('#viewMedia').html('<video autoplay controls height="500" width="500"><source src="@imageKitLink' + name + '?tr=h-500,w-500"/></video>');
+                        }
+                    }
+                    $('#modal-view-media').modal('show');
+                },
+                error: function(err) {
+                    console.log(err);
+                    alert(err.statusText);
                 }
-            }
-            $('#modal-view-media').modal('show');
+            });
         }
 
         function setMediaDimention() {
-            if (mediaContentType) {
-                if (mediaContentType.includes('image')) {
-                    $('#viewMedia').html('<img src="@imageKitLink' + mediaName + '?tr=h-' + $('#height').val() + ',w-' + $('#width').val() + '"/>');
+            if (selectedItem.contentType) {
+                if (selectedItem.contentType.includes('image')) {
+                    $('#viewMedia').html('<img src="@imageKitLink' + selectedItem.name + '?tr=h-' + $('#height').val() + ',w-' + $('#width').val() + '"/>');
                 } else {
-                    $('#viewMedia').html('<video autoplay controls height="' + $('#height').val() +'" width="' + $('#width').val() + '"><source src="@imageKitLink' + name + '?tr=h-' + $('#height').val() + ',w-' + $('#width').val() + '"/></video>');
+                    $('#viewMedia').html('<video autoplay controls height="' + $('#height').val() + '" width="' + $('#width').val() + '"><source src="@imageKitLink' + selectedItem.name + '?tr=h-' + $('#height').val() + ',w-' + $('#width').val() + '"/></video>');
                 }
             }
         }
@@ -191,6 +219,10 @@
                     data: fileData,
                     success: function(result) {
                         alert("Success");
+                        $('#file').val(null);
+                        $('#title').val(null);
+                        CKEDITOR.instances.suggest.setData('');
+                        selectedItem = {};
                         getData();
                     },
                     error: function(err) {

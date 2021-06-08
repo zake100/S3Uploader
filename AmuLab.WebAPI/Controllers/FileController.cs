@@ -5,14 +5,13 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Http;
-using System.Web.Mvc;
 using AmuLab.Core.Entities;
 using AmuLab.Core.Service;
 using AmuLab.WebAPI.Helpers;
 
 namespace AmuLab.WebAPI.Controllers
 {
-    [System.Web.Http.RoutePrefix("api/file")]
+    [RoutePrefix("api/file")]
     public class FileController : BaseController
     {
         private readonly ITmediaService _tmediaService;
@@ -24,8 +23,8 @@ namespace AmuLab.WebAPI.Controllers
             _entitySearchService = entitySearchService;
         }
 
-        [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("upload")]
+        [HttpPost]
+        [Route("upload")]
         public IHttpActionResult Upload()
         {
             var httpRequest = HttpContext.Current.Request;
@@ -63,7 +62,9 @@ namespace AmuLab.WebAPI.Controllers
                         OWNR_ID = 100105,
                         ENTY_IP_ADDR = "::1",
                         PBLISH_ON_TCD = "1",
-                        POST_ID = 26
+                        POST_ID = 26,
+                        MEDIA_TITLE = title,
+                        MEDIA_DESC = content
                     };
                     _tmediaService.Add(entity);
                 }
@@ -73,8 +74,8 @@ namespace AmuLab.WebAPI.Controllers
             return Ok(result);
         }
 
-        [System.Web.Http.HttpGet]
-        [System.Web.Http.Route("download")]
+        [HttpGet]
+        [Route("download")]
         public IHttpActionResult Download(string key)
         {
             var myUploader = new AmazonHelper();
@@ -88,8 +89,8 @@ namespace AmuLab.WebAPI.Controllers
             return ResponseMessage(response);
         }
 
-        [System.Web.Http.HttpGet]
-        [System.Web.Http.Route("list")]
+        [HttpGet]
+        [Route("list")]
         public IHttpActionResult List()
         {
             var myUploader = new AmazonHelper();
@@ -97,11 +98,19 @@ namespace AmuLab.WebAPI.Controllers
             return Ok(result);
         }
 
-        [System.Web.Http.HttpGet]
-        [System.Web.Http.Route("getAll")]
+        [HttpGet]
+        [Route("getAll")]
         public IHttpActionResult GetAll()
         {
             var result = _tmediaService.GetAll().OrderByDescending(c=>c.MEDIA_CDT);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("getDetail/{id}")]
+        public IHttpActionResult GetDetail(long id)
+        {
+            var result = _tmediaService.GetById(id);
             return Ok(result);
         }
     }

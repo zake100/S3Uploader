@@ -46,6 +46,8 @@ namespace AmuLab.Core.Entities
         public int CLCK_CNTR { get; set;}
         public string PBLISH_ON_TCD { get; set;}
         public long? POST_ID { get; set;}
+        public string MEDIA_TITLE { get; set;}
+        public string MEDIA_DESC { get; set;}
     }
 }
 #pragma warning restore 1591

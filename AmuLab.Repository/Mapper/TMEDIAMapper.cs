@@ -61,6 +61,8 @@ namespace AmuLab.Repository.Mapper
 			Map(f => f.CLCK_CNTR).Column("CLCK_CNTR");
 			Map(f => f.PBLISH_ON_TCD).Column("PBLISH_ON_TCD");
 			Map(f => f.POST_ID).Column("POST_ID");
+			Map(f => f.MEDIA_TITLE).Column("MEDIA_TITLE");
+			Map(f => f.MEDIA_DESC).Column("MEDIA_DESC");
 		}
 
 
