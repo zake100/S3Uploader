@@ -87,17 +87,5 @@ namespace AmuLab.WebAPI.Controllers
             var result = myUploader.ListingObjects();
             return Ok(result);
         }
-
-        [HttpGet]
-        [Route("getUser")]
-        public IHttpActionResult GetUser()
-        {
-            return Ok(new List<object>
-            {
-                new { id = "abc", name = "abc"},
-                new { id = "123", name = "123"},
-                new { id = "456", name = "456"},
-            });
-        }
     }
 }

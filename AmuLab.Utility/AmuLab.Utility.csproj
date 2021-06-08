@@ -106,7 +106,6 @@
     <Compile Include="EncriptFunctions.cs" />
     <Compile Include="IElasticClient.cs" />
     <Compile Include="IElasticNestClient.cs" />
-    <Compile Include="MailHelper.cs" />
     <Compile Include="RedisCacheClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringHelpers.cs" />

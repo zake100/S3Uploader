@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseRepository.cs" />
+    <Compile Include="EntitySearchRepository.cs" />
     <Compile Include="Mapper\MapperGenerator.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

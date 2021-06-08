@@ -1,6 +1,4 @@
-﻿using AmuLab.Core.Enums;
-
-namespace AmuLab.Core.Service
+﻿namespace AmuLab.Core.Service
 {
     public interface IServiceBase
     {
