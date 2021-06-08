@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -30,6 +31,8 @@ namespace AmuLab.WebAPI.Controllers
             foreach (string file in files)
             {
                 var postedFile = httpRequest.Files[file];
+                var length = postedFile.ContentLength;
+                var contentType = postedFile.ContentType;
                 var name = postedFile.FileName;
                 var s3DirectoryName = "";
                 var myUploader = new AmazonHelper();
@@ -37,13 +40,13 @@ namespace AmuLab.WebAPI.Controllers
                 result = result && a;
                 if (a)
                 {
-                    _tmediaService.Add(new TMEDIAEntity
+                    var entity = new TMEDIAEntity
                     {
                         SHRD_KEY = "1000200",
                         MEDIA_NM = Path.GetFileName(name),
                         MEDIA_EXTN = Path.GetExtension(name),
-                        MEDIA_FIL_TY = "image/jpeg",
-                        MEDIA_SIZE_NBR = postedFile.ContentLength,
+                        MEDIA_FIL_TY = contentType,
+                        MEDIA_SIZE_NBR = length,
                         MEDIA_LOC_PATH = "/post/original/100020014_8caedf2541b54e5abb70e5d23a5b6c67.jpg",
                         MEDIA_EXTR_ID = "d",
                         MEDIA_THUMB_NM = "100020014_8caedf2541b54e5abb70e5d23a5b6c67.jpg",
@@ -54,7 +57,8 @@ namespace AmuLab.WebAPI.Controllers
                         ENTY_IP_ADDR = "::1",
                         PBLISH_ON_TCD = "1",
                         POST_ID = 26
-                    });
+                    };
+                    _tmediaService.Add(entity);
                 }
             }
             return Ok(result);
@@ -82,6 +86,18 @@ namespace AmuLab.WebAPI.Controllers
             var myUploader = new AmazonHelper();
             var result = myUploader.ListingObjects();
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("getUser")]
+        public IHttpActionResult GetUser()
+        {
+            return Ok(new List<object>
+            {
+                new { id = "abc", name = "abc"},
+                new { id = "123", name = "123"},
+                new { id = "456", name = "456"},
+            });
         }
     }
 }
