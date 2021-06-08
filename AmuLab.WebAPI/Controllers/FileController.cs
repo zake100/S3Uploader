@@ -89,6 +89,14 @@ namespace AmuLab.WebAPI.Controllers
         }
 
         [HttpGet]
+        [Route("search")]
+        public IHttpActionResult Search()
+        {
+            var result = _tmediaService.GetAll();
+            return Ok(result);
+        }
+
+        [HttpGet]
         [Route("getUser")]
         public IHttpActionResult GetUser()
         {
