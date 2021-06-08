@@ -1,6 +1,8 @@
 ﻿@{
     ViewBag.Title = "Upload To S3";
     var apiUrl = AmuLab.Core.Constants.Configuration.ApiUrl;
+    var externalLink = AmuLab.Core.Constants.Configuration.ExternalLink;
+    var imageKitLink = AmuLab.Core.Constants.Configuration.ImageKit;
 }
 
 <section class="content-header">
@@ -89,7 +91,7 @@
                 type: "GET",
                 success: function(result) {
                     var str = '';
-                    
+
                     for (var i = 0; i < result.length; i++) {
                         var item = result[i];
                         str += '<tr>';
@@ -110,12 +112,12 @@
 
         function viewMedia(name) {
             mediaName = name;
-            $('#image').html('<img src="https://ik.imagekit.io/dghocdn/' + name + '?tr=h-500,w-500"/>');
+            $('#image').html('<img src="@imageKitLink' + name + '?tr=h-500,w-500"/>');
             $('#modal-view-media').modal('show');
         }
 
         function setMediaDimention() {
-            $('#image').html('<img src="https://ik.imagekit.io/dghocdn/' + mediaName + '?tr=h-' + $('#height').val() + ',w-' + $('#width').val() + '"/>');
+            $('#image').html('<img src="@imageKitLink' + mediaName + '?tr=h-' + $('#height').val() + ',w-' + $('#width').val() + '"/>');
         }
 
         $('#uploadFile').on('click',
@@ -158,7 +160,7 @@
                     feed: '@($"{apiUrl}/api/account/searchProfile")?userName={encodedQuery}',
                     minChars: 0,
                     marker: '@("@")',
-                    outputTemplate: '<a href="https://github.com/ckeditor/ckeditor4/issues/{id}" onclick="alert(1213)">{name} (#{id})</a> '
+                    outputTemplate: '<a href="@externalLink/{name}" target="_blank">{name} (#{id})</a> '
                 }]
         });
 
