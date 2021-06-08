@@ -4,13 +4,14 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Http;
+using System.Web.Mvc;
 using AmuLab.Core.Entities;
 using AmuLab.Core.Service;
 using AmuLab.WebAPI.Helpers;
 
 namespace AmuLab.WebAPI.Controllers
 {
-    [RoutePrefix("api/file")]
+    [System.Web.Http.RoutePrefix("api/file")]
     public class FileController : BaseController
     {
         private readonly ITmediaService _tmediaService;
@@ -22,14 +23,15 @@ namespace AmuLab.WebAPI.Controllers
             _entitySearchService = entitySearchService;
         }
 
-        [HttpPost]
-        [Route("upload")]
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("upload")]
         public IHttpActionResult Upload()
         {
             var httpRequest = HttpContext.Current.Request;
             var files = httpRequest.Files;
             var result = true;
-
+            var title = httpRequest.Form.Get("title");
+            var content = httpRequest.Unvalidated.Form.Get("content");
             foreach (string file in files)
             {
                 var postedFile = httpRequest.Files[file];
@@ -41,7 +43,7 @@ namespace AmuLab.WebAPI.Controllers
                 
                 var myUploader = new AmazonHelper();
                 var uploadedResult = myUploader.UploadToS3(postedFile.InputStream, s3DirectoryName, name);
-                
+
                 if (uploadedResult)
                 {
                     var entity = new TMEDIAEntity
@@ -70,8 +72,8 @@ namespace AmuLab.WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        [Route("download")]
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("download")]
         public IHttpActionResult Download(string key)
         {
             var myUploader = new AmazonHelper();
@@ -85,8 +87,8 @@ namespace AmuLab.WebAPI.Controllers
             return ResponseMessage(response);
         }
 
-        [HttpGet]
-        [Route("list")]
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("list")]
         public IHttpActionResult List()
         {
             var myUploader = new AmazonHelper();
@@ -94,8 +96,8 @@ namespace AmuLab.WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        [Route("getAll")]
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("getAll")]
         public IHttpActionResult GetAll()
         {
             var result = _tmediaService.GetAll();
