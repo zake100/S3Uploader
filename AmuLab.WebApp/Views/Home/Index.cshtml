@@ -18,13 +18,106 @@
     <textarea id="suggest" name="suggest"></textarea>
     <hr />
     <button class="btn btn-success" id="uploadFile" type="button">Upload</button>
+    <hr />
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Content Type
+            </th>
+            <th>
+                Size
+            </th>
+            <th>
+                File Preview
+            </th>
+        </tr>
+        </thead>
+        <tbody id="listData">
+        </tbody>
+    </table>
 </section>
+<div class="modal fade" id="modal-view-media">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row" style="width: 100%; overflow: auto;">
+                    <div class="col-md-12" style="text-align: center;" id="image"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-4 form-group">
+                        <label>Height</label>
+                        <input class="form-control" type="number" id="height" value="500"/>
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label>Width</label>
+                        <input class="form-control" type="number" id="width" value="500"/>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-success" onclick="setMediaDimention()">Set</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 
 @section scripts {
     <script src="~/Content/js/jquery.unobtrusive-ajax.js"></script>
     <script src="~/Content/plugin/ckeditor/ckeditor.js"></script>
     <script type="text/javascript">
-        let editor;
+        let editor, mediaName = '';
+        $(document).ready(function() {
+            getData();
+        });
+
+        function getData() {
+            $.ajax({
+                url: '@($"{apiUrl}/api/file/search")',
+                type: "GET",
+                success: function(result) {
+                    var str = '';
+                    
+                    for (var i = 0; i < result.length; i++) {
+                        var item = result[i];
+                        str += '<tr>';
+                        str += '<td>' + item.mediA_NM + '</td>';
+                        str += '<td>' + item.mediA_FIL_TY + '</td>';
+                        str += '<td>' + item.mediA_SIZE_NBR + '</td>';
+                        str += '<td><img style="cursor: pointer;" onclick="viewMedia(\'' + item.mediA_NM + '\')" src="https://ik.imagekit.io/dghocdn/' + item.mediA_NM + '?tr=h-50,w-50"/></td>';
+                        str += '</tr>';
+                    }
+                    $('#listData').html(str);
+                },
+                error: function(err) {
+                    console.log(err);
+                    alert(err.statusText);
+                }
+            });
+        }
+
+        function viewMedia(name) {
+            mediaName = name;
+            $('#image').html('<img src="https://ik.imagekit.io/dghocdn/' + name + '?tr=h-500,w-500"/>');
+            $('#modal-view-media').modal('show');
+        }
+
+        function setMediaDimention() {
+            $('#image').html('<img src="https://ik.imagekit.io/dghocdn/' + mediaName + '?tr=h-' + $('#height').val() + ',w-' + $('#width').val() + '"/>');
+        }
+
         $('#uploadFile').on('click',
             function() {
                 var fileUpload = $('#file').get(0);
@@ -45,6 +138,7 @@
                     data: fileData,
                     success: function(result) {
                         alert("Success");
+                        getData();
                     },
                     error: function(err) {
                         console.log(err);
@@ -60,8 +154,8 @@
         //config.outputTemplate = '<a href="https://github.com/ckeditor/ckeditor4/issues/{id}">{name} (#{id})</a> ';
 
         CKEDITOR.replace('suggest', {
-            extraPlugins: ['mentions', 'autocomplete', 'textmatch', 'textwatcher']//,
-            //mentions:
+            extraPlugins: ['mentions', 'autocomplete', 'textmatch', 'textwatcher'],
+            mentions: [{ feed: '@($"{apiUrl}/api/account/searchProfile")?userName={encodedQuery}', minChars: 0, marker: '@("@")' }]
         });
 
         CKEDITOR.config.outputTemplate = '<a href="https://github.com/ckeditor/ckeditor4/issues/{id}">{name} (#{id})</a> ';

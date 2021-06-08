@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Http;
 using AmuLab.Core.Entities;
+using AmuLab.Core.Models.Search;
 using AmuLab.Core.Service;
 using AmuLab.WebAPI.Helpers;
 
@@ -88,6 +90,26 @@ namespace AmuLab.WebAPI.Controllers
             var myUploader = new AmazonHelper();
             var result = myUploader.ListingObjects();
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("search")]
+        public IHttpActionResult Search()
+        {
+            var result = _tmediaService.GetAll();
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("getUser")]
+        public IHttpActionResult GetUser()
+        {
+            return Ok(new List<object>
+            {
+                new { id = "abc", name = "abc"},
+                new { id = "123", name = "123"},
+                new { id = "456", name = "456"},
+            });
         }
     }
 }
