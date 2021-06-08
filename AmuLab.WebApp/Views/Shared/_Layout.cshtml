@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>@ViewBag.Title - TKV</title>
+    <title>@ViewBag.Title - Amu-Lab</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
@@ -52,10 +52,6 @@
     @RenderSection("scriptsHeader", required: false)
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
-    @*@if (HttpContext.Current.User == null || !HttpContext.Current.User.Identity.IsAuthenticated)
-    {
-        Response.Redirect("~/Login/Index?returnUrl=" + Server.UrlEncode(HttpContext.Current.Request.Url.PathAndQuery));
-    }*@
     <div class="wrapper">
         <header class="main-header">
             <!-- Logo -->
@@ -63,16 +59,9 @@
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini">
                     <b>
-                        @*<img src="~/Content/img/user.png" style="width: 100%" />*@
-                        TTN
+                       AMU-LAB
                     </b>
                 </span>
-                <!-- logo for regular state and mobile devices -->
-                @*<span class="logo-lg">
-                    <b>
-                        <img src="~/Content/img/Portal.png" style="height: 34px; margin-left: -5px;" />
-                    </b>
-                </span>*@
             </a>
         </header>
 
@@ -82,10 +71,6 @@
         </div>
         <!-- /.content-wrapper -->
         <footer class="main-footer">
-            @*<div class="pull-right hidden-xs">
-                <b>CDTN</b> version 2018
-            </div>
-            <strong>Copyright &copy; Công ty Cổ phần TATSUMI <a href="https://www.thanthongnhat.vn/" target="_blank"><img src="~/Content/img/logo_tatsumi.png" style="height: 32px;" /></a></strong>*@
         </footer>
 
         <!-- Control Sidebar -->
