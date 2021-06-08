@@ -1,12 +1,7 @@
-﻿using AmuLab.Core.Models.Search;
-using AmuLab.Core.Repository;
+﻿using AmuLab.Core.Repository;
 using AmuLab.Core.Utility;
-using AmuLab.WebAPI.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AmuLab.Core.Entities;
 
 namespace AmuLab.Repository
 {

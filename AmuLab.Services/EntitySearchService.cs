@@ -1,8 +1,8 @@
 ﻿using AmuLab.Core.Models.Search;
 using AmuLab.Core.Repository;
 using AmuLab.Core.Service;
-using AmuLab.WebAPI.Models;
 using System.Linq;
+using AmuLab.Core.Entities;
 
 namespace AmuLab.Services
 {
