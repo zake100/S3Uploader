@@ -3,6 +3,7 @@ using AmuLab.Core.Exceptions;
 using AmuLab.Core.Repository;
 using AmuLab.Core.Service;
 using System;
+using System.Collections.Generic;
 
 namespace AmuLab.Services
 {
@@ -50,6 +51,11 @@ namespace AmuLab.Services
             currentMedia.POST_ID = tMedia.POST_ID;
 
             return _repository.Update(currentMedia);
+        }
+
+        public IEnumerable<TMEDIAEntity> GetAll()
+        {
+            return _repository.GetAll();
         }
 
         public bool Delete(int mediaId)
