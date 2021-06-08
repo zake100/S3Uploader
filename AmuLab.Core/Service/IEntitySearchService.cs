@@ -1,5 +1,5 @@
-﻿using AmuLab.Core.Models.Search;
-using AmuLab.WebAPI.Models;
+﻿using AmuLab.Core.Entities;
+using AmuLab.Core.Models.Search;
 
 namespace AmuLab.Core.Service
 {

@@ -1,10 +1,4 @@
-﻿using AmuLab.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace AmuLab.WebAPI.Models
+﻿namespace AmuLab.Core.Entities
 {
     public class EntitySearch: BaseEntity
     {
