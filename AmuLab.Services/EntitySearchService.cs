@@ -20,7 +20,7 @@ namespace AmuLab.Services
             var searchResults = new SearchModel<EntitySearch>();
             var allEntities = _searchRepository.Get();
 
-            if(searchModel != null && string.IsNullOrWhiteSpace(searchModel.UserName))
+            if(searchModel != null && !string.IsNullOrWhiteSpace(searchModel.UserName))
             {
                 allEntities = allEntities.Where(e => e.ENTY_NM.Contains(searchModel.UserName)).ToList();
             }
