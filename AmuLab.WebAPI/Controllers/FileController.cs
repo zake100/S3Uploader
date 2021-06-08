@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -30,17 +29,20 @@ namespace AmuLab.WebAPI.Controllers
             var httpRequest = HttpContext.Current.Request;
             var files = httpRequest.Files;
             var result = true;
+
             foreach (string file in files)
             {
                 var postedFile = httpRequest.Files[file];
                 var length = postedFile.ContentLength;
                 var contentType = postedFile.ContentType;
+                
                 var name = postedFile.FileName;
                 var s3DirectoryName = "";
+                
                 var myUploader = new AmazonHelper();
-                var a = myUploader.UploadToS3(postedFile.InputStream, s3DirectoryName, name);
-                result = result && a;
-                if (a)
+                var uploadedResult = myUploader.UploadToS3(postedFile.InputStream, s3DirectoryName, name);
+                
+                if (uploadedResult)
                 {
                     var entity = new TMEDIAEntity
                     {
@@ -62,6 +64,8 @@ namespace AmuLab.WebAPI.Controllers
                     };
                     _tmediaService.Add(entity);
                 }
+
+                result = result && uploadedResult;
             }
             return Ok(result);
         }
@@ -74,10 +78,10 @@ namespace AmuLab.WebAPI.Controllers
             
             var result = myUploader.ReadObjectData(key, out string contentType);
             result.Position = 0;
+
             var response = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(result) };
             response.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-            //response.Content.Headers.ContentDisposition =
-            //    new ContentDispositionHeaderValue("attachment") { FileName = fileName };
+
             return ResponseMessage(response);
         }
 
@@ -96,18 +100,6 @@ namespace AmuLab.WebAPI.Controllers
         {
             var result = _tmediaService.GetAll();
             return Ok(result);
-        }
-
-        [HttpGet]
-        [Route("getUser")]
-        public IHttpActionResult GetUser()
-        {
-            return Ok(new List<object>
-            {
-                new { id = "abc", name = "abc"},
-                new { id = "123", name = "123"},
-                new { id = "456", name = "456"},
-            });
         }
     }
 }
