@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -98,7 +99,7 @@ namespace AmuLab.WebAPI.Controllers
         [Route("getAll")]
         public IHttpActionResult GetAll()
         {
-            var result = _tmediaService.GetAll();
+            var result = _tmediaService.GetAll().OrderByDescending(c=>c.MEDIA_CDT);
             return Ok(result);
         }
     }

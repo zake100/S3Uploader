@@ -232,8 +232,6 @@ namespace AmuLab.Repository
 
         public IEnumerable<TE> GetAll()
         {
-            //var allIds = GetAllIds();
-            //return GetById(allIds);
             using (var sqlConnection = new SqlConnection(ConnectionString))
             {
                 sqlConnection.Open();

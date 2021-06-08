@@ -66,7 +66,7 @@
                         <input class="form-control" type="number" id="width" value="500" />
                     </div>
                     <div class="col-md-4">
-                        <button class="btn btn-success" onclick="setMediaDimention()">Set</button>
+                        <button class="btn btn-success" onclick="setMediaDimention()">Change Demission</button>
                     </div>
                 </div>
             </div>
@@ -79,6 +79,7 @@
 @section scripts {
     <script src="~/Content/js/jquery.unobtrusive-ajax.js"></script>
     <script src="~/Content/plugin/ckeditor/ckeditor.js"></script>
+    
     <script type="text/javascript">
         let editor, mediaName = '', mediaContentType = '';
         $(document).ready(function() {
