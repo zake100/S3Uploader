@@ -31,5 +31,15 @@ namespace AmuLab.Core.Constants
         {
             get { return ConfigurationManager.AppSettings["ApiUrl"]; }
         }
+
+        public static string ExternalLink
+        {
+            get { return ConfigurationManager.AppSettings["ExternalLink"]; }
+        }
+
+        public static string ImageKit
+        {
+            get { return ConfigurationManager.AppSettings["ImageKit"]; }
+        }
     }
 }
