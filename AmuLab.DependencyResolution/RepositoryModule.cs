@@ -8,6 +8,7 @@ namespace AmuLab.DependencyResolution
         public override void Load()
         {
             Bind<ITMediaRepository>().To<TMediaRepository>();
+            Bind<IEntitySearchRepository>().To<EntitySearchRepository>();
         }
     }
 }

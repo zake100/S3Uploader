@@ -2,16 +2,12 @@
     ViewBag.Title = "Upload To S3";
     var apiUrl = AmuLab.Core.Constants.Configuration.ApiUrl;
 }
-<!-- Content Header (Page header) -->
+
 <section class="content-header">
     <h1>
         Upload to S3
         <small></small>
     </h1>
-    @*<ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active">Dashboard</li>
-        </ol>*@
 </section>
 
 <!-- Main content -->
@@ -19,6 +15,8 @@
     <div class="form-group">
         <input type="file" name="file" class="form-control" id="file" />
     </div>
+    <textarea id="suggest" name="suggest"></textarea>
+    <hr />
     <button class="btn btn-success" id="uploadFile" type="button">Upload</button>
     <hr />
     <table class="table table-bordered table-striped">
@@ -154,10 +152,10 @@
         CKEDITOR.plugins.addExternal('autocomplete', '/Content/plugin/ckeditor/plugins/autocomplete/', 'plugin.js');
         CKEDITOR.plugins.addExternal('textmatch', '/Content/plugin/ckeditor/plugins/textmatch/', 'plugin.js');
         CKEDITOR.plugins.addExternal('textwatcher', '/Content/plugin/ckeditor/plugins/textwatcher/', 'plugin.js');
-        CKEDITOR.replace('suggest',
-            {
-                extraPlugins: ['mentions', 'autocomplete', 'textmatch', 'textwatcher'],
-                mentions: [{ feed: '@($"{apiUrl}/api/file/getUser")', minChars: 0, marker: '@("@")' }]
-            });
+
+        CKEDITOR.replace('suggest', {
+            extraPlugins: ['mentions', 'autocomplete', 'textmatch', 'textwatcher'],
+            mentions: [{ feed: '@($"{apiUrl}/api/account/searchProfile")', minChars: 0, marker: '@("@")' }]
+        });
     </script>
 }
