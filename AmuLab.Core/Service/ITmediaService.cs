@@ -12,5 +12,6 @@ namespace AmuLab.Core.Service
         TMEDIAEntity Add(TMEDIAEntity tMedia);
         bool Update(TMEDIAEntity tMedia);
         bool Delete(int mediaId);
+        IEnumerable<TMEDIAEntity> GetAll();
     }
 }
