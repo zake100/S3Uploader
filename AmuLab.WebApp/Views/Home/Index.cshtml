@@ -15,7 +15,7 @@
 <!-- Main content -->
 <section class="content">
     <div class="form-group">
-        <input type="file" name="file" class="form-control" id="file" multiple/>
+        <input type="file" name="file" class="form-control" id="file" multiple />
     </div>
     <textarea id="suggest" name="suggest"></textarea>
     <hr />
@@ -23,20 +23,20 @@
     <hr />
     <table class="table table-bordered table-striped">
         <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Content Type
-            </th>
-            <th>
-                Size
-            </th>
-            <th>
-                File Preview
-            </th>
-        </tr>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Content Type
+                </th>
+                <th>
+                    Size
+                </th>
+                <th>
+                    File Preview
+                </th>
+            </tr>
         </thead>
         <tbody id="listData">
         </tbody>
@@ -52,18 +52,18 @@
             </div>
             <div class="modal-body">
                 <div class="row" style="width: 100%; overflow: auto;">
-                    <div class="col-md-12" style="text-align: center;" id="image"></div>
+                    <div class="col-md-12" style="text-align: center;" id="viewMedia"></div>
                 </div>
             </div>
             <div class="modal-footer">
                 <div class="row">
                     <div class="col-md-4 form-group">
                         <label>Height</label>
-                        <input class="form-control" type="number" id="height" value="500"/>
+                        <input class="form-control" type="number" id="height" value="500" />
                     </div>
                     <div class="col-md-4 form-group">
                         <label>Width</label>
-                        <input class="form-control" type="number" id="width" value="500"/>
+                        <input class="form-control" type="number" id="width" value="500" />
                     </div>
                     <div class="col-md-4">
                         <button class="btn btn-success" onclick="setMediaDimention()">Set</button>
@@ -80,7 +80,7 @@
     <script src="~/Content/js/jquery.unobtrusive-ajax.js"></script>
     <script src="~/Content/plugin/ckeditor/ckeditor.js"></script>
     <script type="text/javascript">
-        let editor, mediaName = '';
+        let editor, mediaName = '', mediaContentType = '';
         $(document).ready(function() {
             getData();
         });
@@ -98,7 +98,17 @@
                         str += '<td>' + item.mediA_NM + '</td>';
                         str += '<td>' + item.mediA_FIL_TY + '</td>';
                         str += '<td>' + item.mediA_SIZE_NBR + '</td>';
-                        str += '<td><img style="cursor: pointer;" onclick="viewMedia(\'' + item.mediA_NM + '\')" src="https://ik.imagekit.io/dghocdn/' + item.mediA_NM + '?tr=h-50,w-50"/></td>';
+                        if (item.mediA_FIL_TY) {
+                            if (item.mediA_FIL_TY.includes('image')) {
+                                str += '<td><img style="cursor: pointer;" onclick="viewMedia(\'' + item.mediA_NM + '\', \'' + item.mediA_FIL_TY + '\')" src="https://ik.imagekit.io/dghocdn/' + item.mediA_NM + '?tr=h-50,w-50"/></td>';
+                            } else if (item.mediA_FIL_TY.includes('video')) {
+                                str += '<td><video height="50" width="50" style="cursor: pointer;" onclick="viewMedia(\'' + item.mediA_NM + '\', \'' + item.mediA_FIL_TY + '\')"><source src="https://ik.imagekit.io/dghocdn/' + item.mediA_NM + '?tr=h-50,w-50"/></video></td>';
+                            } else {
+                                str += '<td></td>';
+                            }
+                        } else {
+                            str += '<td></td>';
+                        }
                         str += '</tr>';
                     }
                     $('#listData').html(str);
@@ -110,15 +120,33 @@
             });
         }
 
-        function viewMedia(name) {
+        function viewMedia(name, contentType) {
             mediaName = name;
-            $('#image').html('<img src="@imageKitLink' + name + '?tr=h-500,w-500"/>');
+            mediaContentType = contentType;
+            if (contentType) {
+                if (contentType.includes('image')) {
+                    $('#viewMedia').html('<img src="@imageKitLink' + name + '?tr=h-500,w-500"/>');
+                } else {
+                    $('#viewMedia').html('<video autoplay controls height="500" width="500"><source src="@imageKitLink' + name + '?tr=h-500,w-500"/></video>');
+                }
+            }
             $('#modal-view-media').modal('show');
         }
 
         function setMediaDimention() {
-            $('#image').html('<img src="@imageKitLink' + mediaName + '?tr=h-' + $('#height').val() + ',w-' + $('#width').val() + '"/>');
+            if (mediaContentType) {
+                if (mediaContentType.includes('image')) {
+                    $('#viewMedia').html('<img src="@imageKitLink' + mediaName + '?tr=h-' + $('#height').val() + ',w-' + $('#width').val() + '"/>');
+                } else {
+                    $('#viewMedia').html('<video autoplay controls height="' + $('#height').val() +'" width="' + $('#width').val() + '"><source src="@imageKitLink' + name + '?tr=h-' + $('#height').val() + ',w-' + $('#width').val() + '"/></video>');
+                }
+            }
         }
+
+        $('#modal-view-media').on('hidden.bs.modal',
+            function(e) {
+                $('#viewMedia').html('');
+            });
 
         $('#uploadFile').on('click',
             function() {
@@ -153,16 +181,18 @@
         CKEDITOR.plugins.addExternal('textmatch', '/Content/plugin/ckeditor/plugins/textmatch/', 'plugin.js');
         CKEDITOR.plugins.addExternal('textwatcher', '/Content/plugin/ckeditor/plugins/textwatcher/', 'plugin.js');
 
-        CKEDITOR.replace('suggest', {
-            extraPlugins: ['mentions', 'autocomplete', 'textmatch', 'textwatcher'],
-            mentions: [
-                {
-                    feed: '@($"{apiUrl}/api/account/searchProfile")?userName={encodedQuery}',
-                    minChars: 0,
-                    marker: '@("@")',
-                    outputTemplate: '<a href="@externalLink/{name}" target="_blank">{name} (#{id})</a> '
-                }]
-        });
+        CKEDITOR.replace('suggest',
+            {
+                extraPlugins: ['mentions', 'autocomplete', 'textmatch', 'textwatcher'],
+                mentions: [
+                    {
+                        feed: '@($"{apiUrl}/api/account/searchProfile")?userName={encodedQuery}',
+                        minChars: 0,
+                        marker: '@("@")',
+                        outputTemplate: '<a href="@externalLink/{name}" target="_blank">{name} (#{id})</a> '
+                    }
+                ]
+            });
 
     </script>
 }

@@ -13027,7 +13027,6 @@
     <Content Include="Content\plugin\ckeditor\plugins\codesnippet\lib\highlight\README.ru.md" />
     <Content Include="Content\plugin\ckeditor\plugins\emoji\emoji.json" />
     <Content Include="Content\plugin\ckeditor\plugins\htmlwriter\samples\assets\outputforflash\outputforflash.fla" />
-    <None Include="Properties\PublishProfiles\TKV.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -13093,6 +13092,7 @@
     <Folder Include="Content\plugin\timepicker\" />
     <Folder Include="Content\plugin\treevew-checkbox\js\" />
     <Folder Include="fonts\" />
+    <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Scripts\esm\" />
     <Folder Include="Scripts\umd\" />
   </ItemGroup>
