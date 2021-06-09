@@ -41,7 +41,9 @@
     <hr/>
     <button class="btn btn-success" id="uploadFile" type="button">Upload</button>
     <hr />
+
     <h4>Files List</h4>
+    
     <table class="table table-bordered table-striped">
         <thead>
         <tr>
@@ -63,6 +65,7 @@
         </tbody>
     </table>
 </section>
+
 <div class="modal fade" id="modal-view-media">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -72,6 +75,7 @@
                 </button>
                 <h4 class="modal-title" id="mediaTitle"></h4>
             </div>
+
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-10">
@@ -79,27 +83,26 @@
                             <div class="col-md-12" style="text-align: center;" id="viewMedia"></div>
                         </div>
                     </div>
-                    <div class="col-md-2">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="input-group">
-                                    <span class="input-group-addon"><strong>Height</strong></span>
-                                    <input class="form-control" type="number" id="height" value="500" />
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="input-group">
-                                    <span class="input-group-addon"><strong>Width</strong></span>
-                                    <input class="form-control" type="number" id="width" value="500" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
+
             <div class="modal-footer">
-                <div class="col-md-12">
-                    <button class="btn btn-success" onclick="setMediaDimention()">Change Dimention</button>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon"><strong>Height</strong></span>
+                            <input class="form-control" type="number" id="height" value="500" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon"><strong>Width</strong></span>
+                            <input class="form-control" type="number" id="width" value="500" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-success" onclick="setMediaDimention()">Change Dimensions</button>
+                    </div>
                 </div>
             </div>
         </div>
