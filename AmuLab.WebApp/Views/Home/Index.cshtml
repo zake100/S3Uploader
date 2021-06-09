@@ -131,10 +131,6 @@
                         str += '<td>' + item.mediA_NM + '</td>';
                         str += '<td>' + item.mediA_FIL_TY + '</td>';
                         str += '<td>' + item.mediA_SIZE_NBR + '</td>';
-                        var desc = '';
-                        if (item.mediA_DESC) {
-                            desc = item.mediA_DESC.replace(/</g, "µ").replace(/>/g, "Ħ");
-                        }
                         if (item.mediA_FIL_TY) {
                             if (item.mediA_FIL_TY.includes('image')) {
                                 str += '<td><img style="cursor: pointer;" onclick="viewMedia(' + item.mediA_ID + ')" src="https://ik.imagekit.io/dghocdn/' + item.mediA_NM + '?tr=h-50,w-50"/></td>';
@@ -244,7 +240,7 @@
                         feed: '@($"{apiUrl}/api/account/searchProfile")?userName={encodedQuery}',
                         minChars: 0,
                         marker: '@("@")',
-                        outputTemplate: '<a href="@externalLink/{name}" target="_blank">{name} (#{id})</a> '
+                        outputTemplate: '<a href="@externalLink/{name}" target="_blank">{name} (#{id})</a>'
                     }
                 ]
             });
