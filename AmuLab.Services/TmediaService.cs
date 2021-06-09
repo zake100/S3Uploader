@@ -58,14 +58,14 @@ namespace AmuLab.Services
             return _repository.GetAll();
         }
 
-        public bool Delete(int mediaId)
+        public bool Delete(long mediaId)
         {
             var currentMedia = _repository.GetById(mediaId);
 
             if(currentMedia == null)
                 throw new BadInfoException("The TMedia doesnot exist in database");
 
-            return _repository.Delete(currentMedia);
+            return _repository.Delete(mediaId);
         }
 
         public TMEDIAEntity GetById(long id)

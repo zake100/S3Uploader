@@ -40,6 +40,10 @@ namespace AmuLab.Core.Constants
         public static string ImageKit
         {
             get { return ConfigurationManager.AppSettings["ImageKit"]; }
+        }       
+        public static string TemporaryFolder
+        {
+            get { return ConfigurationManager.AppSettings["TemporaryFolder"]; }
         }
     }
 }

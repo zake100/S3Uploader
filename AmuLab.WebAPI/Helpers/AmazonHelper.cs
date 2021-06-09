@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Amazon.S3.Model.Internal.MarshallTransformations;
 using Amazon.S3.Transfer;
 
 namespace AmuLab.WebAPI.Helpers
@@ -11,13 +14,16 @@ namespace AmuLab.WebAPI.Helpers
     public class AmazonHelper
     {
         private readonly AmazonS3Client _client;
+        private static object syncRoot = new object();
+        private static int processStatus { get; set; }
+
         public AmazonHelper()
         {
             _client = new AmazonS3Client(new BasicAWSCredentials(Core.Constants.Configuration.AwsAccessKey, Core.Constants.Configuration.AwsSecretKey),
                 RegionEndpoint.USEast1);
         }
 
-        public bool UploadToS3(System.IO.Stream localFilePath, string subDirectoryInBucket, string fileNameInS3)
+        public bool UploadToS3(string localFilePath, string subDirectoryInBucket, string fileNameInS3)
         {
             var utility = new TransferUtility(_client);
             var request = new TransferUtilityUploadRequest();
@@ -31,7 +37,9 @@ namespace AmuLab.WebAPI.Helpers
                 request.BucketName = Core.Constants.Configuration.AwsBucketName + @"/" + subDirectoryInBucket;
             }
             request.Key = fileNameInS3; //file name up in S3  
-            request.InputStream = localFilePath;
+            request.FilePath = localFilePath;
+            // request.InputStream = localFilePath;
+            request.UploadProgressEvent += UploadProgressEventCallback;
             utility.Upload(request); //commensing the transfer  
 
             return true; //indicate that the file was sent  
@@ -110,6 +118,139 @@ namespace AmuLab.WebAPI.Helpers
             catch (Exception e)
             {
                 throw;
+            }
+        }
+
+        public bool Delete(string keyName)
+        {
+            try
+            {
+                var deleteObjectRequest = new DeleteObjectRequest
+                {
+                    BucketName = Core.Constants.Configuration.AwsBucketName,
+                    Key = keyName
+                };
+                var res = _client.DeleteObject(deleteObjectRequest);
+                return res.HttpStatusCode == HttpStatusCode.OK;
+            }
+            catch (AmazonS3Exception e)
+            {
+                Console.WriteLine("Error encountered on server. Message:'{0}' when deleting an object", e.Message);
+                throw;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Unknown encountered on server. Message:'{0}' when deleting an object", e.Message);
+                throw;
+            }
+        }
+
+        public bool UploadObject(System.IO.Stream localFile, string subDirectoryInBucket, string keyName)
+        {
+            // Create list to store upload part responses.
+            var uploadResponses = new List<UploadPartResponse>();
+
+            // Setup information required to initiate the multipart upload.
+            var initiateRequest = new InitiateMultipartUploadRequest
+            {
+                BucketName = Core.Constants.Configuration.AwsBucketName,
+                Key = keyName
+            };
+
+            // Initiate the upload.
+            var initResponse =
+                _client.InitiateMultipartUpload(initiateRequest);
+
+            // Upload parts.
+            var contentLength = localFile.Length;
+            var partSize = 20 * (long)Math.Pow(2, 20); // 20 MB
+
+            try
+            {
+                Console.WriteLine("Uploading parts");
+
+                long filePosition = 0;
+                for (var i = 1; filePosition < contentLength; i++)
+                {
+                    var uploadRequest = new UploadPartRequest
+                    {
+                        BucketName = Core.Constants.Configuration.AwsBucketName + (string.IsNullOrEmpty(subDirectoryInBucket) ? "" : $@"/{subDirectoryInBucket}"),
+                        Key = keyName,
+                        UploadId = initResponse.UploadId,
+                        PartNumber = i,
+                        PartSize = partSize,
+                        FilePosition = filePosition,
+                        InputStream = localFile
+                    };
+
+                    // Track upload progress.
+                    uploadRequest.StreamTransferProgress += UploadPartProgressEventCallback;
+
+                    // Upload a part and add the response to our list.
+                    uploadResponses.Add(_client.UploadPart(uploadRequest));
+
+                    filePosition += partSize;
+                }
+
+                // Setup to complete the upload.
+                var completeRequest = new CompleteMultipartUploadRequest
+                {
+                    BucketName = Core.Constants.Configuration.AwsBucketName,
+                    Key = keyName,
+                    UploadId = initResponse.UploadId
+                };
+                completeRequest.AddPartETags(uploadResponses);
+
+                // Complete the upload.
+                var completeUploadResponse =
+                    _client.CompleteMultipartUpload(completeRequest);
+                return completeUploadResponse.HttpStatusCode == HttpStatusCode.OK;
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine("An AmazonS3Exception was thrown: {0}", exception.Message);
+
+                // Abort the upload.
+                var abortMpuRequest = new AbortMultipartUploadRequest
+                {
+                    BucketName = Core.Constants.Configuration.AwsBucketName,
+                    Key = keyName,
+                    UploadId = initResponse.UploadId
+                };
+                _client.AbortMultipartUpload(abortMpuRequest);
+                throw;
+            }
+        }
+
+        public static void UploadPartProgressEventCallback(object sender, StreamTransferProgressArgs e)
+        {
+            // Process event. 
+            Console.WriteLine("{0}/{1}", e.TransferredBytes, e.TotalBytes);
+        }
+
+        public static void UploadProgressEventCallback(object sender, UploadProgressArgs e)
+        {
+            // Process event. 
+            Console.WriteLine("{0}/{1}", e.TransferredBytes, e.TotalBytes);
+            lock (syncRoot)
+            {
+                processStatus = e.PercentDone;
+            }
+        }
+
+        public int GetStatus()
+        {
+            lock (syncRoot)
+            {
+                return processStatus;
+            }
+        }
+
+        public void SetComplete()
+        {
+            lock (syncRoot)
+            {
+                processStatus = 100;
             }
         }
     }

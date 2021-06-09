@@ -18,7 +18,7 @@
         <div class="col-md-2"><label>File</label></div>
         <div class="col-md-10">
             <div class="form-group">
-                <input type="file" name="file" class="form-control" id="file" multiple/>
+                <input type="file" name="file" class="form-control" id="file" multiple />
             </div>
         </div>
     </div>
@@ -26,7 +26,7 @@
         <div class="col-md-2"><label>Title</label></div>
         <div class="col-md-10">
             <div class="form-group">
-                <input class="form-control" id="title"/>
+                <input class="form-control" id="title" />
             </div>
         </div>
     </div>
@@ -38,28 +38,29 @@
             </div>
         </div>
     </div>
-    <hr/>
+    <hr />
     <button class="btn btn-success" id="uploadFile" type="button">Upload</button>
     <hr />
 
     <h4>Files List</h4>
-    
+
     <table class="table table-bordered table-striped">
         <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Content Type
-            </th>
-            <th>
-                Size
-            </th>
-            <th>
-                File Preview
-            </th>
-        </tr>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Content Type
+                </th>
+                <th>
+                    Size
+                </th>
+                <th>
+                    File Preview
+                </th>
+                <th>Action</th>
+            </tr>
         </thead>
         <tbody id="listData">
         </tbody>
@@ -110,9 +111,34 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+<div class="modal fade" id="uploadProgress" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-2">Upload from client to Server</div>
+                    <div class="col-md-10">
+                        <div class="progress" id="progress">
+                            <div class="progress-bar" id="progressBar"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">Upload from Server to S3</div>
+                    <div class="col-md-10">
+                        <div class="progress" id="progress1">
+                            <div class="progress-bar" id="progressBar1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 
 @section scripts {
-    <script src="~/Content/js/jquery.unobtrusive-ajax.js"></script>
     <script src="~/Content/plugin/ckeditor/ckeditor.js"></script>
 
     <script type="text/javascript">
@@ -136,15 +162,16 @@
                         str += '<td>' + item.mediA_SIZE_NBR + '</td>';
                         if (item.mediA_FIL_TY) {
                             if (item.mediA_FIL_TY.includes('image')) {
-                                str += '<td><img style="cursor: pointer;" onclick="viewMedia(' + item.mediA_ID + ')" src="https://ik.imagekit.io/dghocdn/' + item.mediA_NM + '?tr=h-50,w-50"/></td>';
+                                str += '<td><img style="cursor: pointer;" onclick="viewMedia(' + item.mediA_ID + ', \'' + item.mediA_FIL_TY + '\', \'' + item.mediA_NM + '\')" src="https://ik.imagekit.io/dghocdn/' + item.mediA_NM + '?tr=h-50,w-50"/></td>';
                             } else if (item.mediA_FIL_TY.includes('video')) {
-                                str += '<td><video height="50" width="50" style="cursor: pointer;" onclick="viewMedia(' + item.mediA_ID + ')"><source src="https://ik.imagekit.io/dghocdn/' + item.mediA_NM + '?tr=h-50,w-50"/></video></td>';
+                                str += '<td><video height="50" width="50" style="cursor: pointer;" onclick="viewMedia(' + item.mediA_ID + ', \'' + item.mediA_FIL_TY + '\', \'' + item.mediA_NM + '\')"><source src="https://ik.imagekit.io/dghocdn/' + item.mediA_NM + '?tr=h-50,w-50"/></video></td>';
                             } else {
                                 str += '<td></td>';
                             }
                         } else {
                             str += '<td></td>';
                         }
+                        str += '<td><button class="btn btn-danger" onclick="deleteMedia(' + item.mediA_ID + ')"><i class="fa fa-trash"></i></button></td>';
                         str += '</tr>';
                     }
                     $('#listData').html(str);
@@ -156,23 +183,23 @@
             });
         }
 
-        function viewMedia(id) {
+        function viewMedia(id, contentTypeMedia, nameMedia) {
+            if (contentTypeMedia) {
+                if (contentTypeMedia.includes('image')) {
+                    $('#viewMedia').html('<img src="@imageKitLink' + nameMedia + '?tr=h-500,w-500"/>');
+                } else {
+                    $('#viewMedia').html('<video autoplay controls height="500" width="500"><source src="@imageKitLink' + nameMedia + '?tr=h-500,w-500"/></video>');
+                }
+            }
             $.ajax({
                 url: '@($"{apiUrl}/api/file/getDetail/")' + id,
                 type: "GET",
-                success: function (result) {
+                success: function(result) {
                     var contentType = result.mediA_FIL_TY;
                     var name = result.mediA_NM;
                     selectedItem.name = name;
                     selectedItem.contentType = contentType;
                     $('#mediaTitle').text(result.mediA_TITLE);
-                    if (contentType) {
-                        if (contentType.includes('image')) {
-                            $('#viewMedia').html('<img src="@imageKitLink' + name + '?tr=h-500,w-500"/>');
-                        } else {
-                            $('#viewMedia').html('<video autoplay controls height="500" width="500"><source src="@imageKitLink' + name + '?tr=h-500,w-500"/></video>');
-                        }
-                    }
                     $('#modal-view-media').modal('show');
                 },
                 error: function(err) {
@@ -189,6 +216,23 @@
                 } else {
                     $('#viewMedia').html('<video autoplay controls height="' + $('#height').val() + '" width="' + $('#width').val() + '"><source src="@imageKitLink' + selectedItem.name + '?tr=h-' + $('#height').val() + ',w-' + $('#width').val() + '"/></video>');
                 }
+            }
+        }
+
+        function deleteMedia(id) {
+            var r = confirm("Are you sure you want to delete this?");
+            if (r) {
+                $.ajax({
+                    url: '@($"{apiUrl}/api/file/delete/")' + id,
+                    type: "POST",
+                    success: function(result) {
+                        getData();
+                    },
+                    error: function(err) {
+                        console.log(err);
+                        alert(err.statusText);
+                    }
+                });
             }
         }
 
@@ -211,22 +255,65 @@
                 fileData.append('content', CKEDITOR.instances.suggest.getData());
                 fileData.append('title', $('#title').val());
                 $.ajax({
+                    xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress",
+                            function(evt) {
+                                if (evt.lengthComputable) {
+                                    var percentComplete = ((evt.loaded / evt.total) * 100);
+                                    $("#progressBar").width(percentComplete + '%');
+                                    $("#progressBar").html(Math.round(percentComplete) + '%');
+                                }
+                            },
+                            false);
+                        return xhr;
+                    },
                     url: '@($"{apiUrl}/api/file/upload")',
                     type: "POST",
                     contentType: false, // Not to set any content header
                     processData: false, // Not to process data
                     data: fileData,
+                    beforeSend: function() {
+                        $("#progressBar").width('0%');
+                        $('#uploadProgress').modal('show');
+                    },
                     success: function(result) {
-                        alert("Success");
+                        //alert("Success");
                         $('#file').val(null);
                         $('#title').val(null);
                         CKEDITOR.instances.suggest.setData('');
                         selectedItem = {};
-                        getData();
+                        //getData();
+                        var a = setInterval(function() {
+                                $.ajax({
+                                    url: '@($"{apiUrl}/api/file/getUploadProgress")',
+                                    type: "GET",
+                                    success: function(percentComplete) {
+                                        $("#progressBar1").width(percentComplete + '%');
+                                        $("#progressBar1").html(Math.round(percentComplete) + '%');
+                                        if (percentComplete >= 100) {
+                                            clearInterval(a);
+                                            alert("Success");
+                                            getData();
+                                            $('#uploadProgress').modal('hide');
+                                        }
+                                    },
+                                    error: function(err) {
+                                        console.log(err);
+                                        alert(err.statusText);
+                                        clearInterval(a);
+                                        getData();
+                                        $('#uploadProgress').modal('hide');
+                                    }
+                                });
+                            },
+                            3000);
+//                        $('#uploadProgress').modal('hide');
                     },
                     error: function(err) {
                         console.log(err);
                         alert(err.statusText);
+//                        $('#uploadProgress').modal('hide');
                     }
                 });
             });

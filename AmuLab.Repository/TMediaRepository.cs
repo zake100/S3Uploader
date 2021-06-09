@@ -62,5 +62,14 @@ namespace AmuLab.Repository
                 return sqlConnection.Query<TMEDIAEntity>($"SELECT * FROM [dbo].[TMEDIA] WHERE [MEDIA_ID] = {id}").FirstOrDefault();
             }
         }
+
+        public bool Delete(long id)
+        {
+            using (var sqlConnection = new SqlConnection(ConnectionString))
+            {
+                sqlConnection.Open();
+                return sqlConnection.Execute($"DELETE FROM [dbo].[TMEDIA] WHERE [MEDIA_ID] = {id}") > 0;
+            }
+        }
     }
 }
