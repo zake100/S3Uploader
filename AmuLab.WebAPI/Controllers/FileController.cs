@@ -32,6 +32,7 @@ namespace AmuLab.WebAPI.Controllers
             var result = true;
             var title = httpRequest.Form.Get("title");
             var content = httpRequest.Unvalidated.Form.Get("content");
+
             foreach (string file in files)
             {
                 var postedFile = httpRequest.Files[file];
