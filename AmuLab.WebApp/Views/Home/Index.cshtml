@@ -275,18 +275,18 @@
                     data: fileData,
                     beforeSend: function() {
                         $("#progressBar").width('0%');
+                        $("#progressBar1").width('0%');
                         $('#uploadProgress').modal('show');
                     },
-                    success: function(result) {
+                    success: function (id) {
                         //alert("Success");
                         $('#file').val(null);
                         $('#title').val(null);
                         CKEDITOR.instances.suggest.setData('');
                         selectedItem = {};
-                        //getData();
                         var a = setInterval(function() {
                                 $.ajax({
-                                    url: '@($"{apiUrl}/api/file/getUploadProgress")',
+                                    url: '@($"{apiUrl}/api/file/getUploadProgress/")' + id,
                                     type: "GET",
                                     success: function(percentComplete) {
                                         $("#progressBar1").width(percentComplete + '%');

@@ -16,15 +16,13 @@ namespace AmuLab.WebAPI.Controllers
     public class FileController : BaseController
     {
         private readonly ITmediaService _tmediaService;
-        private readonly IEntitySearchService _entitySearchService;
-        private delegate bool ProcessTask(string localFilePath, string subDirectoryInBucket, string fileNameInS3);
+        private delegate bool ProcessTask(string localFilePath, string subDirectoryInBucket, string fileNameInS3, string id);
 
         private readonly AmazonHelper myUploader;
 
-        public FileController(ITmediaService tmediaService, IEntitySearchService entitySearchService)
+        public FileController(ITmediaService tmediaService)
         {
             _tmediaService = tmediaService;
-            _entitySearchService = entitySearchService;
             myUploader = new AmazonHelper();
         }
 
@@ -38,6 +36,8 @@ namespace AmuLab.WebAPI.Controllers
             var title = httpRequest.Form.Get("title");
             var content = httpRequest.Unvalidated.Form.Get("content");
 
+            var id = Guid.NewGuid();
+            myUploader.AddProcess(id.ToString());
             foreach (string file in files)
             {
                 var postedFile = httpRequest.Files[file];
@@ -45,7 +45,7 @@ namespace AmuLab.WebAPI.Controllers
                 var contentType = postedFile.ContentType;
 
                 var name = postedFile.FileName;
-                var s3DirectoryName = "";
+                var s3DirectoryName = string.Empty;
                 if (!Directory.Exists(Core.Constants.Configuration.TemporaryFolder))
                 {
                     Directory.CreateDirectory(Core.Constants.Configuration.TemporaryFolder);
@@ -55,7 +55,7 @@ namespace AmuLab.WebAPI.Controllers
                 postedFile.SaveAs(fullPath);
                 //var uploadedResult = myUploader.UploadToS3($@"D://Upload/{name}", s3DirectoryName, name);
                 var processTask = new ProcessTask(myUploader.UploadToS3);
-                processTask.BeginInvoke(fullPath, s3DirectoryName, name, ((res) =>
+                processTask.BeginInvoke(fullPath, s3DirectoryName, name, id.ToString(), ((res) =>
                 {
                     var pT = (ProcessTask)res.AsyncState;
                     var res1 = pT.EndInvoke(res);
@@ -84,11 +84,10 @@ namespace AmuLab.WebAPI.Controllers
                         _tmediaService.Add(entity);
                     }
                     File.Delete(fullPath);
-                    myUploader.SetComplete();
-
+                    myUploader.SetComplete(id.ToString());
                 }), processTask);
             }
-            return Ok(result);
+            return Ok(id);
         }
 
         [HttpGet]
@@ -117,7 +116,7 @@ namespace AmuLab.WebAPI.Controllers
         [Route("getAll")]
         public IHttpActionResult GetAll()
         {
-            var result = _tmediaService.GetAll().OrderByDescending(c=>c.MEDIA_CDT);
+            var result = _tmediaService.GetAll().OrderByDescending(c => c.MEDIA_CDT);
             return Ok(result);
         }
 
@@ -142,17 +141,17 @@ namespace AmuLab.WebAPI.Controllers
             //var result = myUploader.Delete(obj.MEDIA_NM);
             //if (result)
             //{
-                var result = _tmediaService.Delete(id);
+            var result = _tmediaService.Delete(id);
             //}
 
             return Ok(result);
         }
 
         [HttpGet]
-        [Route("getUploadProgress")]
-        public IHttpActionResult GetProgressUpload()
+        [Route("getUploadProgress/{id}")]
+        public IHttpActionResult GetProgressUpload(string id)
         {
-            return Ok(myUploader.GetStatus());
+            return Ok(myUploader.GetStatus(id));
         }
     }
 }

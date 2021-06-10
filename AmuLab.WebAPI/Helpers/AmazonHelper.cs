@@ -6,7 +6,6 @@ using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
-using Amazon.S3.Model.Internal.MarshallTransformations;
 using Amazon.S3.Transfer;
 
 namespace AmuLab.WebAPI.Helpers
@@ -15,7 +14,7 @@ namespace AmuLab.WebAPI.Helpers
     {
         private readonly AmazonS3Client _client;
         private static object syncRoot = new object();
-        private static int processStatus { get; set; }
+        private static Dictionary<string, int> processStatus = new Dictionary<string, int>();
 
         public AmazonHelper()
         {
@@ -23,7 +22,7 @@ namespace AmuLab.WebAPI.Helpers
                 RegionEndpoint.USEast1);
         }
 
-        public bool UploadToS3(string localFilePath, string subDirectoryInBucket, string fileNameInS3)
+        public bool UploadToS3(string localFilePath, string subDirectoryInBucket, string fileNameInS3, string id)
         {
             var utility = new TransferUtility(_client);
             var request = new TransferUtilityUploadRequest();
@@ -39,7 +38,7 @@ namespace AmuLab.WebAPI.Helpers
             request.Key = fileNameInS3; //file name up in S3  
             request.FilePath = localFilePath;
             // request.InputStream = localFilePath;
-            request.UploadProgressEvent += UploadProgressEventCallback;
+            request.UploadProgressEvent += (sender, e) => UploadProgressEventCallback(sender, e, id);
             utility.Upload(request); //commensing the transfer  
 
             return true; //indicate that the file was sent  
@@ -228,29 +227,42 @@ namespace AmuLab.WebAPI.Helpers
             Console.WriteLine("{0}/{1}", e.TransferredBytes, e.TotalBytes);
         }
 
-        public static void UploadProgressEventCallback(object sender, UploadProgressArgs e)
+        public static void UploadProgressEventCallback(object sender, UploadProgressArgs e, string id)
         {
             // Process event. 
             Console.WriteLine("{0}/{1}", e.TransferredBytes, e.TotalBytes);
             lock (syncRoot)
             {
-                processStatus = e.PercentDone;
+                processStatus[id] = e.PercentDone;
             }
         }
 
-        public int GetStatus()
+        public void AddProcess(string key)
         {
             lock (syncRoot)
             {
-                return processStatus;
+                processStatus.Add(key, 0);
             }
         }
 
-        public void SetComplete()
+        public int GetStatus(string id)
         {
             lock (syncRoot)
             {
-                processStatus = 100;
+                var process = processStatus[id];
+                if (process >= 100)
+                {
+                    processStatus.Remove(id);
+                }
+                return process;
+            }
+        }
+
+        public void SetComplete(string id)
+        {
+            lock (syncRoot)
+            {
+                processStatus[id] = 100;
             }
         }
     }
